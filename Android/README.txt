@@ -1,1 +1,1 @@
-Ứng dụng di động Androi
+Ứng dụng di động Android
