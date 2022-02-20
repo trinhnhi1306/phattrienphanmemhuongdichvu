@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace MiniStore.WebAPI.Controllers
 {
-    public class UsersController : ApiController
+    public class UserController : ApiController
     {
         VANPHONGPHAMEntities db = new VANPHONGPHAMEntities();
 

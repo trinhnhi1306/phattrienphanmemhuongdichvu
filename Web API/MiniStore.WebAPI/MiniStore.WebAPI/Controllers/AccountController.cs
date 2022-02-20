@@ -16,10 +16,18 @@ namespace MiniStore.WebAPI.Controllers
 
         private User ToJsonUser(User user)
         {
+            if (user.Address != null)
+            {
+                user.Address.Users.Clear();
+            }
             user.Address = null;
             user.Carts = null;
             user.Feedbacks = null;
             user.Orders = null;
+            if (user.Permission != null)
+            {
+                user.Permission.Users.Clear();
+            }
             user.Permission = null;
             return user;
         }
@@ -68,17 +76,5 @@ namespace MiniStore.WebAPI.Controllers
                 return ex.Message;
             }
         }
-
-        // PUT: api/Login/5
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/Login/5
-        public void Delete(int id)
-        {
-        }
-
-
     }
 }
