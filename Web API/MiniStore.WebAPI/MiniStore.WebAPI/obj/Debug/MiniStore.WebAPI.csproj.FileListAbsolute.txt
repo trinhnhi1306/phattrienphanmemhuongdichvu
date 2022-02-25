@@ -97,3 +97,11 @@ E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bi
 E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Memory.xml
 E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Numerics.Vectors.xml
 E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Runtime.CompilerServices.Unsafe.xml
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\Microsoft.Bcl.AsyncInterfaces.dll
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Text.Encodings.Web.dll
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Threading.Tasks.Extensions.dll
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.ValueTuple.dll
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\Microsoft.Bcl.AsyncInterfaces.xml
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Text.Encodings.Web.xml
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.Threading.Tasks.Extensions.xml
+E:\PTIT\phattrienphanmemhuongdichvu\Web API\MiniStore.WebAPI\MiniStore.WebAPI\bin\System.ValueTuple.xml

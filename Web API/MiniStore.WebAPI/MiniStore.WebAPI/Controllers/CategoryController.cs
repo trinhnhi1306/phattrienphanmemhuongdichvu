@@ -1,4 +1,7 @@
 ﻿using MiniStore.WebAPI.Models;
+using MiniStore.WebAPI.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,21 +16,13 @@ namespace MiniStore.WebAPI.Controllers
     {
         VANPHONGPHAMEntities db = new VANPHONGPHAMEntities();
 
-        private Category ToJsonCategory(Category category)
-        {
-            category.Products.Clear();
-            return category;
-        }
-
         [HttpGet]
         [Route("")]
-        public IEnumerable<Category> GetCategories()
+        public JArray GetCategories()
         {
-            List<Category> list = db.Categories.ToList();
-            for (int i = 0; i < list.Count; i++)
-            {
-                yield return ToJsonCategory(list[i]);
-            }
+            List<Category> data = db.Categories.ToList();
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+            { ContractResolver = IgnorePropertiesResolver.CategoryIgnoreProperites }));
         }
     }
 }

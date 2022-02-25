@@ -1,4 +1,6 @@
 ﻿using MiniStore.WebAPI.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +17,10 @@ namespace MiniStore.WebAPI.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<Poster> GetPosters()
+        public JArray GetPosters()
         {
-            return db.Posters.Where(p => p.isActive == true);
+            List<Poster> data = db.Posters.Where(p => p.isActive == true).ToList();
+            return JArray.Parse(JsonConvert.SerializeObject(data));
         }
     }
 }
