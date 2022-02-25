@@ -1,4 +1,7 @@
 ﻿using MiniStore.WebAPI.Models;
+using MiniStore.WebAPI.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,38 +17,21 @@ namespace MiniStore.WebAPI.Controllers
     {
         VANPHONGPHAMEntities db = new VANPHONGPHAMEntities();
 
-        private User ToJsonUser(User user)
-        {
-            if (user.Address != null)
-            {
-                user.Address.Users.Clear();
-            }
-            user.Address = null;
-            user.Carts = null;
-            user.Feedbacks = null;
-            user.Orders = null;
-            if (user.Permission != null)
-            {
-                user.Permission.Users.Clear();
-            }
-            user.Permission = null;
-            return user;
-        }
-
         [HttpPost]
         [Route("login")]
-        public User Login([FromBody] User tmp)
+        public JArray Login([FromBody] User loginUser)
         {
-            User user = db.Users.FirstOrDefault(u => u.username == tmp.username);
-            if (user == null)
+            List<User> data = new List<User>();
+            User user = db.Users.FirstOrDefault(u => u.username == loginUser.username);
+            if (user != null)
             {
-                return new User();
+                if (BCrypt.Net.BCrypt.Verify(loginUser.password, user.password))
+                {
+                    data.Add(user);
+                }
             }
-            if (BCrypt.Net.BCrypt.Verify(tmp.password, user.password))
-            {
-                return ToJsonUser(user);
-            }
-            return new User();
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+                { ContractResolver = IgnorePropertiesResolver.UserIgnoreProperites }));
         }
 
         [HttpPost]

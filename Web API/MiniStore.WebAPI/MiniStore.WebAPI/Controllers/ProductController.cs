@@ -1,10 +1,14 @@
 ﻿using MiniStore.WebAPI.Models;
+using MiniStore.WebAPI.Utils;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace MiniStore.WebAPI.Controllers
 {
@@ -13,69 +17,49 @@ namespace MiniStore.WebAPI.Controllers
     {
         VANPHONGPHAMEntities db = new VANPHONGPHAMEntities();
 
-        private Product ToJsonProduct(Product product)
+        [HttpGet]
+        [Route("")]
+        public JArray GetNewProducts(int quantity)
         {
-            if (product.Brand != null)
+            List<Product> data = new List<Product>();
+            if (quantity > 0)
             {
-                product.Brand.Products.Clear();
+                data = db.Products.OrderByDescending(p => p.product_id).Take(quantity).ToList();
             }
-            product.Brand = null;
-            product.Carts.Clear();
-            if (product.Category != null)
-            {
-                product.Category.Products.Clear();
-            }
-            product.Category = null;
-            product.Feedbacks.Clear();
-            product.Order_detail.Clear();
-            return product;
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+            { ContractResolver = IgnorePropertiesResolver.ProductIgnoreProperites }));
         }
 
         [HttpGet]
-        [Route("new/{quantity}")]
-        public IEnumerable<Product> GetNewProducts(int quantity)
+        [Route("")]
+        public JArray GetProductsById(int productId)
         {
-            List<Product> list = new List<Product>();
-            if (quantity <= 0)
-            {
-                return list;
-            }
-            List<Product> newProducts = db.Products.
-                OrderByDescending(p => p.product_id).Take(quantity).ToList();
-            for (int i = 0; i < newProducts.Count; i++)
-            {
-                list.Add(ToJsonProduct(newProducts[i]));
-            }
-            return list;
-        }
-
-        [HttpGet]
-        [Route("product-id/{id}")]
-        public Product GetProductsById(int id)
-        {
-            Product product = db.Products.Find(id);
+            List<Product> data = new List<Product>();
+            Product product = db.Products.Find(productId);
             if (product != null)
             {
-                return ToJsonProduct(product);
+                data.Add(product);
             }
-            return new Product();
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+                { ContractResolver = IgnorePropertiesResolver.ProductIgnoreProperites }));
         }
 
         [HttpGet]
-        [Route("category-id/{categoryId}")]
-        public List<Product> GetProductsByCategoryId(int categoryId)
+        [Route("")]
+        public JArray GetProductsByCategoryId(int categoryId)
         {
-            List<Product> products = new List<Product>();
+            List<Product> data;
             Category category = db.Categories.Find(categoryId);
             if (category != null)
             {
-                List<Product> list = category.Products.ToList();
-                for (int i = 0; i < list.Count; i++)
-                {
-                    products.Add(ToJsonProduct(list[i]));
-                }
+                data = category.Products.ToList();
             }
-            return products;
+            else
+            {
+                data = new List<Product>();
+            }
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+            { ContractResolver = IgnorePropertiesResolver.ProductIgnoreProperites }));
         }
 
     }
