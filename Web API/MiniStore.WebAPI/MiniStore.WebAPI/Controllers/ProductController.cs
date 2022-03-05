@@ -31,7 +31,7 @@ namespace MiniStore.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("getProductsById/{productId}")]
         public JArray GetProductsById(int productId)
         {
             List<Product> data = new List<Product>();
@@ -45,7 +45,7 @@ namespace MiniStore.WebAPI.Controllers
         }
 
         [HttpGet]
-        [Route("")]
+        [Route("getProductsByCategoryId/{categoryId}")]
         public JArray GetProductsByCategoryId(int categoryId)
         {
             List<Product> data;
