@@ -31,6 +31,16 @@ namespace MiniStore.WebAPI.Controllers
         }
 
         [HttpGet]
+        [Route("getAllProducts")]
+        public JArray GetAllProducts()
+        {
+            List<Product> data = db.Products.ToList();
+
+            return JArray.Parse(JsonConvert.SerializeObject(data, new JsonSerializerSettings()
+            { ContractResolver = IgnorePropertiesResolver.ProductIgnoreProperites }));
+        }
+
+        [HttpGet]
         [Route("getProductsById/{productId}")]
         public JArray GetProductsById(int productId)
         {
@@ -62,5 +72,46 @@ namespace MiniStore.WebAPI.Controllers
             { ContractResolver = IgnorePropertiesResolver.ProductIgnoreProperites }));
         }
 
+        [HttpPost]
+        [Route("addProduct")]
+        public string AddProduct([FromBody] Product product)
+        {
+            product.sold_quantity = 0;
+            product.status = true;
+            try
+            {
+                db.Products.Add(product);
+                db.SaveChanges();
+                return "success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public string UpdateProduct(int id, [FromBody] Product productEdit)
+        {
+
+            Product product = db.Products.Find(id);
+            if (product != null)
+                return "Put method success";
+           
+            return "Không tìm thấy sản phẩm này";
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public string DeleteProduct(int id)
+        {
+
+            Product product = db.Products.Find(id);
+            if (product != null)
+                return "Delete method success";
+
+            return "Không tìm thấy sản phẩm này";
+        }
     }
 }
