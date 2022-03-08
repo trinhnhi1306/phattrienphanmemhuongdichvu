@@ -1,0 +1,42 @@
+package com.Quan.TryJWT.models;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Table(name = "province")
+@Getter
+@Setter
+@lombok.AllArgsConstructor
+@lombok.NoArgsConstructor
+public class Province {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "province_id")
+	private long provinceId;
+	
+	@Column(name="province_name",length = 100)
+	private String provinceName;
+	
+	@Column(name="district_prefix",length = 20)
+	private String districtPrefix;
+	
+	
+	@OneToMany(mappedBy = "province",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<District> district = new HashSet<>();
+}
