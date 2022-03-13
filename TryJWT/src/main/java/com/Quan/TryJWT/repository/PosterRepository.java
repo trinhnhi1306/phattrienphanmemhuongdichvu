@@ -3,9 +3,9 @@ package com.Quan.TryJWT.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.Quan.TryJWT.models.Order;
+import com.Quan.TryJWT.models.Poster;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>{
+public interface PosterRepository extends JpaRepository<Poster, Long>{
 
 }
