@@ -65,6 +65,9 @@ public class Product {
 	 
 	 private boolean status;
 	 
+		@Column(name = "calculation_unit ",length = 300)
+		private String calculationUnit ;
+	 
 	 @OneToMany(mappedBy = "product",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	 private Set<Cart> carts = new HashSet<>();
 	 

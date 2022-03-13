@@ -10,29 +10,41 @@ public class FeedbackId implements Serializable{
 	private long userId;
 	
 	@Column(name="id_product")
-	private long idBook;
+	private long idProduct;
+
+	
+
+	public FeedbackId(long userId, long idProduct) {
+		super();
+		this.userId = userId;
+		this.idProduct = idProduct;
+	}
+
+
 
 	public long getUserId() {
 		return userId;
 	}
 
+
+
 	public void setUserId(long userId) {
 		this.userId = userId;
 	}
 
-	public long getIdBook() {
-		return idBook;
+
+
+	public long getIdProduct() {
+		return idProduct;
 	}
 
-	public void setIdBook(long idBook) {
-		this.idBook = idBook;
+
+
+	public void setIdProduct(long idProduct) {
+		this.idProduct = idProduct;
 	}
 
-	public FeedbackId(long userId, long idBook) {
-		super();
-		this.userId = userId;
-		this.idBook = idBook;
-	}
+
 
 	public FeedbackId() {
 		super();

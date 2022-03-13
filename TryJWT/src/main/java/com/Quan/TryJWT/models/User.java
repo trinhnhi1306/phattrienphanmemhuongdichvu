@@ -40,6 +40,15 @@ public class User {
 	@Size(max = 120)
 	private String password;
 	
+	@NotBlank
+	@Size(max = 120)
+	@Column(name = "first_name")
+	private String firstName;
+	
+	@NotBlank
+	@Size(max = 120)
+	@Column(name = "last_name")
+	private String lastName;
 	
 	
 	public User( @NotBlank @Size(max = 20) String username, @NotBlank @Size(max = 50) @Email String email,
