@@ -38,6 +38,8 @@ public class Category {
 	@Column(name = "note",length = 300)
 	private String note;
 	
+
+	
 	
 	@OneToMany(mappedBy = "category",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Product> categorys = new HashSet<>();

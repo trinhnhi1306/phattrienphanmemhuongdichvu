@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,12 +29,14 @@ public class Feedback {
 	private FeedbackId feedbackId; 
 	
 	@ManyToOne
-	@JoinColumn(name = "product_id",insertable = false, updatable = false)
-	private Product product;
+    @JoinColumn(name = "user_id",insertable = false, updatable = false)
+	private User user; 
+	
 	
 	@ManyToOne
-	@JoinColumn(name = "user_id",insertable = false, updatable = false)
-	private User user;
+    @JoinColumn(name = "id_product",insertable = false, updatable = false)
+	private Product product;
+	
 	
 	private Date date;
 	
