@@ -33,10 +33,10 @@ public class Province {
 	@Column(name="province_name",length = 100)
 	private String provinceName;
 	
-	@Column(name="district_prefix",length = 20)
-	private String districtPrefix;
+	@Column(name="province_code",length = 20)
+	private String provinceCode;
 	
 	
 	@OneToMany(mappedBy = "province",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<District> district = new HashSet<>();
+    private Set<District> districts = new HashSet<>();
 }

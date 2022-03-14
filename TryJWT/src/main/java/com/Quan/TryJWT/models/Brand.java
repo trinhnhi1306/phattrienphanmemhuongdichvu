@@ -35,5 +35,5 @@ public class Brand {
 	private String description;
 	
 	@OneToMany(mappedBy = "brand",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Product> brands = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 }

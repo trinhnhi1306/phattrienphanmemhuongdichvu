@@ -42,5 +42,5 @@ public class Category {
 	
 	
 	@OneToMany(mappedBy = "category",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Product> categorys = new HashSet<>();
+    private Set<Product> products = new HashSet<>();
 }

@@ -33,7 +33,7 @@ public class Cart {
 	 @JoinColumn(name = "user_id")
 	 private User user;
 	
-	@Column(name = "item_price")
+	@Column(name = "quantity")
 	private int quantity;
 	
 	

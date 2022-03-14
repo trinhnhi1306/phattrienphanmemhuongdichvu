@@ -109,6 +109,8 @@ public class AuthController {
 			});
 		}
 		user.setRoles(roles);
+		user.setStatus(true);
+		user.setImage("Defaul.png");
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
