@@ -1,6 +1,6 @@
-package com.Quan.TryJWT.models;
+package com.Quan.TryJWT.model;
 
-import java.util.Set;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,22 +13,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "poster")
+@Table(name = "order_status")
 @Getter
 @Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
-public class Poster {
+public class OrderStatus {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-	private long id;
+    @Column(name = "status_id")
+	private long statusId;
 	
-	@Column(name = "name",length = 300)
-	private String name;
-	
-	private int type;
-	
-	@Column(name = "is_active")
-	 private boolean isActive;
+	@Column(name = "description",length = 50)
+	private String description;
 }

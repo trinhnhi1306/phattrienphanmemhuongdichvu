@@ -1,8 +1,9 @@
-package com.Quan.TryJWT.models;
+package com.Quan.TryJWT.model;
 
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,31 +12,35 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "feedback")
 @Getter
 @Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
-public class Order {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
-	private long orderId;
+public class Feedback {
+
+	@EmbeddedId
+	private FeedbackId feedbackId; 
+	
+	@ManyToOne
+    @JoinColumn(name = "user_id",insertable = false, updatable = false)
+	private User user; 
+	
+	
+	@ManyToOne
+    @JoinColumn(name = "id_product",insertable = false, updatable = false)
+	private Product product;
+	
 	
 	private Date date;
 	
-	@Column(name = "total_price")
-	private float totalPrice;
+	private String comment;
 	
-	@ManyToOne
-	 @JoinColumn(name = "status_id")
-	private OrderStatus statusId;
-	
-	@ManyToOne
-	 @JoinColumn(name = "user_id")
-	 private User user;
+	private int vote;
 }

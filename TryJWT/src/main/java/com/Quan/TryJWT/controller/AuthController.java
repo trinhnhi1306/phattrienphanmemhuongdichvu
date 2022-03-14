@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.controllers;
+package com.Quan.TryJWT.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,9 +22,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Quan.TryJWT.models.ERole;
-import com.Quan.TryJWT.models.Role;
-import com.Quan.TryJWT.models.User;
+import com.Quan.TryJWT.model.ERole;
+import com.Quan.TryJWT.model.Role;
+import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.payload.request.LoginRequest;
 import com.Quan.TryJWT.payload.request.SignupRequest;
 import com.Quan.TryJWT.payload.response.JwtResponse;

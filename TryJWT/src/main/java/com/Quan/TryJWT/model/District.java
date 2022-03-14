@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.models;
+package com.Quan.TryJWT.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,24 +19,27 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "province")
+@Table(name = "district")
 @Getter
 @Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
-public class Province {
+public class District {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "province_id")
-	private long provinceId;
+    @Column(name = "district_id")
+	private long districtId;
 	
-	@Column(name="province_name",length = 100)
-	private String provinceName;
+	@Column(name="district_name",length = 100)
+	private String districtName;
 	
-	@Column(name="province_code",length = 20)
-	private String provinceCode;
+	@Column(name="district_prefix",length = 100)
+	private String districtPrefix;
 	
+	@ManyToOne
+    @JoinColumn(name = "province_id")
+	private Province province;
 	
-	@OneToMany(mappedBy = "province",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<District> districts = new HashSet<>();
+	@OneToMany(mappedBy = "district",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Ward> wards = new HashSet<>();
 }

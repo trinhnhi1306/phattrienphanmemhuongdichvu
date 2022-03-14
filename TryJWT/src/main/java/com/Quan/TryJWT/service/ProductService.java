@@ -2,7 +2,7 @@ package com.Quan.TryJWT.service;
 
 import org.springframework.data.domain.Page;
 
-import com.Quan.TryJWT.models.Product;
+import com.Quan.TryJWT.model.Product;
 
 
 public interface ProductService {

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Quan.TryJWT.models.User;
+import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.payload.response.MessageResponse;
 import com.Quan.TryJWT.repository.UserRepository;
 import com.Quan.TryJWT.security.UpdatePasswordRequest;
