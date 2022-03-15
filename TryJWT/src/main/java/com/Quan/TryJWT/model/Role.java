@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.models;
+package com.Quan.TryJWT.model;
 
 import javax.persistence.*;
 @Entity

@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.Quan.TryJWT.models.District;
-import com.Quan.TryJWT.models.Province;
+import com.Quan.TryJWT.model.District;
+import com.Quan.TryJWT.model.Province;
 
 
 @Repository

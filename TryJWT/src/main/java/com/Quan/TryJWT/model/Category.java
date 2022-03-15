@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.models;
+package com.Quan.TryJWT.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -10,8 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -19,28 +17,30 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "ward")
+@Table(name = "category")
 @Getter
 @Setter
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
-public class Ward {
+public class Category {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ward_id")
-	private long wardId;
+    @Column(name = "category_id")
+	private long categoryId;
 	
-	@Column(name="ward_name",length = 50)
-	private String wardName;
 	
-	@Column(name="ward_prefix",length = 20)
-	private String wardPrefix;
+	@Column(name = "name",length = 100)
+	private String name;
 	
-	@ManyToOne
-    @JoinColumn(name = "district_id")
-	private District district;
+	@Column(name = "image",length = 300)
+	private String image;
 	
-	@OneToMany(mappedBy = "ward",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Address> addresses = new HashSet<>();
+	@Column(name = "note",length = 300)
+	private String note;
+	
 
+	
+	
+	@OneToMany(mappedBy = "category",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Product> products = new HashSet<>();
 }

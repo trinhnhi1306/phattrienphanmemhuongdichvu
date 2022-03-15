@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.controllers;
+package com.Quan.TryJWT.controller;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.NotFoundException;
-import com.Quan.TryJWT.models.Product;
+import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.service.ProductService;
 
 

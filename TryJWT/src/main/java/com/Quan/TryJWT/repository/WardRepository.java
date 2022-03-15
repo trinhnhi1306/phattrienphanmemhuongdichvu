@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.Quan.TryJWT.models.District;
-import com.Quan.TryJWT.models.Ward;
+import com.Quan.TryJWT.model.District;
+import com.Quan.TryJWT.model.Ward;
 
 @Repository
 public interface WardRepository extends JpaRepository<Ward, Long>{

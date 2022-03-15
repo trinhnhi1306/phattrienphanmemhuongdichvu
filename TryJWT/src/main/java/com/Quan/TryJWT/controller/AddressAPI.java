@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.controllers;
+package com.Quan.TryJWT.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Quan.TryJWT.models.District;
-import com.Quan.TryJWT.models.Province;
-import com.Quan.TryJWT.models.User;
-import com.Quan.TryJWT.models.Ward;
+import com.Quan.TryJWT.model.District;
+import com.Quan.TryJWT.model.Province;
+import com.Quan.TryJWT.model.User;
+import com.Quan.TryJWT.model.Ward;
 import com.Quan.TryJWT.repository.AddressRepository;
 import com.Quan.TryJWT.repository.DistrictRepository;
 import com.Quan.TryJWT.repository.ProvinceRepository;

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.Quan.TryJWT.Exception.NotFoundException;
-import com.Quan.TryJWT.models.Product;
+import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.repository.ProductRepository;
 import com.Quan.TryJWT.service.ProductService;
 
