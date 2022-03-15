@@ -55,6 +55,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			.exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and() // AuthenticationEntryPoint will catch authentication error.
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.authorizeRequests().antMatchers("/api/auth/**").permitAll()
+			.antMatchers("/api/posters/**").permitAll()
+			.antMatchers("/images/posters/**").permitAll()
 			.antMatchers("/api/test/**").permitAll()
 			.anyRequest().authenticated();
 		http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
