@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.DTO;
+package com.Quan.TryJWT.dto;
 
 import com.Quan.TryJWT.model.Brand;
 import com.Quan.TryJWT.model.Category;
