@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,23 +26,20 @@ import lombok.Setter;
 @lombok.NoArgsConstructor
 public class Category {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "category_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "category_id")
 	private long categoryId;
-	
-	
-	@Column(name = "name",length = 100)
-	private String name;
-	
-	@Column(name = "image",length = 300)
-	private String image;
-	
-	@Column(name = "note",length = 300)
-	private String note;
-	
 
-	
-	
-	@OneToMany(mappedBy = "category",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Product> products = new HashSet<>();
+	@Column(name = "name", length = 100)
+	private String name;
+
+	@Column(name = "image", length = 300)
+	private String image;
+
+	@Column(name = "note", length = 300)
+	private String note;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<Product> products = new HashSet<>();
 }

@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,20 +28,21 @@ import lombok.Setter;
 @lombok.NoArgsConstructor
 public class District {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "district_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "district_id")
 	private long districtId;
-	
-	@Column(name="district_name",length = 100)
+
+	@Column(name = "district_name", length = 100)
 	private String districtName;
-	
-	@Column(name="district_prefix",length = 100)
+
+	@Column(name = "district_prefix", length = 100)
 	private String districtPrefix;
-	
+
 	@ManyToOne
-    @JoinColumn(name = "province_id")
+	@JoinColumn(name = "province_id")
 	private Province province;
-	
-	@OneToMany(mappedBy = "district",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    private Set<Ward> wards = new HashSet<>();
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "district", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<Ward> wards = new HashSet<>();
 }

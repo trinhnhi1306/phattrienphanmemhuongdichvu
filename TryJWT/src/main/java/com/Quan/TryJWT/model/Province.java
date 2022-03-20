@@ -10,10 +10,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -36,7 +36,7 @@ public class Province {
 	@Column(name="province_code",length = 20)
 	private String provinceCode;
 	
-	
+	@JsonIgnore
 	@OneToMany(mappedBy = "province",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<District> districts = new HashSet<>();
 }

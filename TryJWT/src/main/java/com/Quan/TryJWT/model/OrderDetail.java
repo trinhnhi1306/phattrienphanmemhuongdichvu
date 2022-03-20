@@ -1,7 +1,5 @@
 package com.Quan.TryJWT.model;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,18 +20,17 @@ import lombok.Setter;
 public class OrderDetail {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id; 
-	
+	private long id;
+
 	@ManyToOne
 	@JoinColumn(name = "product_id")
 	private Product product;
-	
+
 	@ManyToOne
-	 @JoinColumn(name = "order_id")
-	 private Order order;
-	
+	@JoinColumn(name = "order_id")
+	private Order order;
+
 	private int quantity;
-	
-	
+
 	private float price;
 }

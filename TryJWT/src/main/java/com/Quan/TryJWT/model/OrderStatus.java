@@ -1,7 +1,5 @@
 package com.Quan.TryJWT.model;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,10 +18,10 @@ import lombok.Setter;
 @lombok.NoArgsConstructor
 public class OrderStatus {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "status_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "status_id")
 	private long statusId;
-	
-	@Column(name = "description",length = 50)
+
+	@Column(name = "description", length = 50)
 	private String description;
 }

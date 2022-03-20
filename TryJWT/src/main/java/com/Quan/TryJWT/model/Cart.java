@@ -19,22 +19,21 @@ import lombok.Setter;
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor
 public class Cart {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="cart_id")
-	private long cartId; 
+	@Column(name = "cart_id")
+	private Long cartId;
 
 	@ManyToOne
-	 @JoinColumn(name = "product_id")
-	 private Product product;
-	
+	@JoinColumn(name = "product_id")
+	private Product product;
+
 	@ManyToOne
-	 @JoinColumn(name = "user_id")
-	 private User user;
-	
+	@JoinColumn(name = "user_id")
+	private User user;
+
 	@Column(name = "quantity")
 	private int quantity;
-	
-	
+
 }

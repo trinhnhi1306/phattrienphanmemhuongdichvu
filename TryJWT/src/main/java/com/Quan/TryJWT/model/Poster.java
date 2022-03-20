@@ -1,7 +1,5 @@
 package com.Quan.TryJWT.model;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,15 +18,15 @@ import lombok.Setter;
 @lombok.NoArgsConstructor
 public class Poster {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private long id;
-	
-	@Column(name = "name",length = 300)
+
+	@Column(name = "name", length = 300)
 	private String name;
-	
+
 	private int type;
-	
+
 	@Column(name = "is_active")
-	 private boolean isActive;
+	private boolean isActive;
 }

@@ -22,20 +22,20 @@ import lombok.Setter;
 @lombok.NoArgsConstructor
 public class Order {
 	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
 	private long orderId;
-	
+
 	private Date date;
-	
+
 	@Column(name = "total_price")
 	private float totalPrice;
-	
+
 	@ManyToOne
-	 @JoinColumn(name = "status_id")
+	@JoinColumn(name = "status_id")
 	private OrderStatus statusId;
-	
+
 	@ManyToOne
-	 @JoinColumn(name = "user_id")
-	 private User user;
+	@JoinColumn(name = "user_id")
+	private User user;
 }

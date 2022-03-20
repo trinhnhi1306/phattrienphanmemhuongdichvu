@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,6 +42,7 @@ public class Ward {
     @JoinColumn(name = "district_id")
 	private District district;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "ward",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     private Set<Address> addresses = new HashSet<>();
 

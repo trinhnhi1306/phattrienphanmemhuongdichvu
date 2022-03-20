@@ -1,8 +1,5 @@
 package com.Quan.TryJWT.dto;
 
-import com.Quan.TryJWT.model.Brand;
-import com.Quan.TryJWT.model.Category;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
