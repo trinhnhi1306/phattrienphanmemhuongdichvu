@@ -18,7 +18,7 @@ public class PosterServiceImpl implements PosterService {
 	@Autowired
 	private PosterRepository posterRepository;
 	
-	public List<PosterDTO> getPosters() {
+	public List<PosterDTO> getListPosters() {
 		List<Poster> posters = posterRepository.findAll();
 		List<PosterDTO> list = new ArrayList<PosterDTO>();
 		for (Poster poster : posters) {

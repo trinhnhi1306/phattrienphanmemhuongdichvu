@@ -5,5 +5,5 @@ import java.util.List;
 import com.Quan.TryJWT.dto.PosterDTO;
 
 public interface PosterService {
-	public List<PosterDTO> getPosters();
+	public List<PosterDTO> getListPosters();
 }
