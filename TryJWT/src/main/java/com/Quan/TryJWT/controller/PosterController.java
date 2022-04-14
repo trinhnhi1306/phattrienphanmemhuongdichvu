@@ -19,14 +19,14 @@ import com.Quan.TryJWT.serviceImpl.PosterServiceImpl;
 
 @RestController
 @RequestMapping("/api/posters")
-public class PosterRESTController {
+public class PosterController {
 
 	@Autowired
 	private PosterServiceImpl posterService;
 	
-	@GetMapping("/")
+	@GetMapping("")
 	public ResponseEntity<List<PosterDTO>> getPosters() {
-		List<PosterDTO> list = posterService.getPosters();
+		List<PosterDTO> list = posterService.getListPosters();
 		return ResponseEntity.ok(list);
 	}
 	
