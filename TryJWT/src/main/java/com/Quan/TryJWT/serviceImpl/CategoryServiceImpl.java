@@ -1,6 +1,7 @@
 package com.Quan.TryJWT.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ public class CategoryServiceImpl implements CategoryService{
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findAll();
+	}
+
+	@Override
+	public Category getById(long id) {
+		return categoryRepository.getById(id);
 	}
 
 }
