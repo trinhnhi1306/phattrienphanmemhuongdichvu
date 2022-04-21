@@ -44,4 +44,14 @@ public class ProductServiceImpl implements ProductService{
 		return (int) productRepository.count();
 	}
 
+	@Override
+	public Boolean existsByName(String name) {
+		return productRepository.existsByName(name);
+	}
+
+	@Override
+	public void addProduct(Product product) {
+		productRepository.save(product);		
+	}
+
 }

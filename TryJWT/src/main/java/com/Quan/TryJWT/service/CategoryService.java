@@ -6,4 +6,5 @@ import com.Quan.TryJWT.model.Category;
 
 public interface CategoryService {
 	public List<Category> findAll();
+	public Category findById(long id);
 }

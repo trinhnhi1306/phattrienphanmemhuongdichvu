@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.ProductOutput;
 import com.Quan.TryJWT.model.Product;
+import com.Quan.TryJWT.payload.response.MessageResponse;
+import com.Quan.TryJWT.service.BrandService;
+import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -30,6 +36,12 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
+	
+	@Autowired
+	CategoryService categoryService;
+	
+	@Autowired
+	BrandService brandService;
 
 	@GetMapping(value = { "/{pageNo}", "/" })
 	public ResponseEntity<ProductOutput> getProductInOnePage(@PathVariable(required = false) Optional<Integer> pageNo) {
@@ -73,4 +85,18 @@ public class ProductController {
 			return ResponseEntity.badRequest().body("Image not found!");
 		}       
     }
+	
+	@PostMapping
+	public ResponseEntity<?> postProduct(@Valid @RequestBody Product product) {
+		if (productService.existsByName(product.getName())) {
+			return ResponseEntity
+					.badRequest()
+					.body("Error: Product name is already taken!");
+		}
+		Product newProduct = product;
+		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
+		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
+		productService.addProduct(newProduct);
+		return ResponseEntity.ok("Product is saved successfully!");
+	}
 }

@@ -6,4 +6,5 @@ import com.Quan.TryJWT.model.Brand;
 
 public interface BrandService {
 	public List<Brand> findAll();
+	public Brand findById(long id);
 }
