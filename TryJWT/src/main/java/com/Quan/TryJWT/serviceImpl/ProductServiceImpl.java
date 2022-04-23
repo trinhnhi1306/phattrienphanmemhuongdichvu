@@ -65,11 +65,6 @@ public class ProductServiceImpl implements ProductService{
 	}
 
 	@Override
-	public int totalItem() {		
-		return (int) productRepository.count();
-	}
-
-	@Override
 	public Boolean existsByName(String name) {
 		return productRepository.existsByName(name);
 	}

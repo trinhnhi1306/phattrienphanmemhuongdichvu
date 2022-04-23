@@ -13,7 +13,6 @@ public interface ProductService {
 	public int getCount();
 	public int getCountByCategoryId(long categoryId);
 	public Product findById(long idProduct);
-	public int totalItem();
 	public Boolean existsByName(String name);
 	public void addProduct(Product product);
 }
