@@ -45,6 +45,14 @@ public class ProductServiceImpl implements ProductService{
 	}
 	
 	@Override
+	public List<Product> getAllByStatus(boolean status, int pageNo, int pageSize, String sortField, String sortDirection) {
+		Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) 
+				? Sort.by(sortField).ascending() : Sort.by(sortField).descending() ;		
+		Pageable pageable = PageRequest.of(pageNo -1, pageSize,sort);
+		return productRepository.findAllByStatus(status, pageable);
+	}
+	
+	@Override
 	public int getCount() {		
 		return (int) productRepository.count();
 	}
@@ -72,5 +80,16 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public void addProduct(Product product) {
 		productRepository.save(product);		
+	}
+
+	@Override
+	public void deleteProduct(Product product) {		
+		product.setStatus(false);
+		productRepository.save(product);		
+	}
+
+	@Override
+	public void updateProduct(Product product) {
+		productRepository.save(product);
 	}
 }

@@ -12,10 +12,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -88,17 +91,59 @@ public class ProductController {
     }
 	
 	@PostMapping
-	public ResponseEntity<?> postProduct(@Valid @RequestBody Product product) {
+	public ResponseEntity<?> postProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
 		if (productService.existsByName(product.getName())) {
 			return ResponseEntity
 					.badRequest()
 					.body("Error: Product name is already taken!");
 		}
+		if (bindingResult.hasErrors())
+			return ResponseEntity
+					.badRequest()
+					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
 		Product newProduct = product;
 		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
 		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
 		productService.addProduct(newProduct);
-		return ResponseEntity.ok("Product is saved successfully!");
+		return ResponseEntity.ok("Add product successfully!");
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
+		Product product = null;
+		try {
+			product = productService.findById(id);
+			if(product.getOrderDetails().size() > 0)
+				return ResponseEntity.badRequest().body("Product is in use");
+		} catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body("Product is unavaiable");
+		}
+		productService.deleteProduct(product);
+		return ResponseEntity.ok("Remove product successfully!");
+	}
+	
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> putProduct(@PathVariable("id") long id, @Valid @RequestBody Product newProduct, BindingResult bindingResult) {
+		Product oldProduct = null;
+		try {
+			oldProduct = productService.findById(id);
+			if (productService.existsByName(newProduct.getName()) && !newProduct.getName().equals(oldProduct.getName())) {
+				return ResponseEntity
+						.badRequest()
+						.body("Error: Product name is already taken!");
+			}
+			if (bindingResult.hasErrors())
+				return ResponseEntity
+						.badRequest()
+						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+			newProduct.setBrand(brandService.findById(newProduct.getBrand().getBrandId()));
+			newProduct.setCategory(categoryService.findById(newProduct.getCategory().getCategoryId()));
+		} catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body("Product is unavaiable");
+		}
+		
+		productService.updateProduct(newProduct);
+		return ResponseEntity.ok("Update product successfully!");
 	}
 	
 	@GetMapping("")
@@ -135,7 +180,7 @@ public class ProductController {
 		}
 		else {
 			totalPage = (int) Math.ceil((double) (productService.getCount()) / pageSize);
-			products = productService.getAll(pageNo, pageSize, sortField, sortDirection).getContent();
+			products = productService.getAllByStatus(true, pageNo, pageSize, sortField, sortDirection);
 		}
 		
 		ProductOutput output = new ProductOutput();
