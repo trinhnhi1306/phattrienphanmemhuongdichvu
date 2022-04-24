@@ -54,4 +54,13 @@ public class FileUploadController {
 		return ResponseEntity.ok(newFileName);
 	}
 	
+	@PostMapping("/user")
+	public ResponseEntity<?> postUserImage(@RequestParam("file") MultipartFile file) {
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		
+		String newFileName = saveFile(fileName, file, "users");
+		
+		return ResponseEntity.ok(newFileName);
+	}
+	
 }
