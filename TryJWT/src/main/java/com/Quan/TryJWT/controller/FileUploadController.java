@@ -40,9 +40,9 @@ public class FileUploadController {
 	public ResponseEntity<?> postProductImage(@RequestParam("file") MultipartFile file) {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		
-		saveFile(fileName, file, "products");
+		String newFileName = saveFile(fileName, file, "products");
 		
-		return ResponseEntity.ok(fileName);
+		return ResponseEntity.ok(newFileName);
 	}
 	
 	@PostMapping("/category")
