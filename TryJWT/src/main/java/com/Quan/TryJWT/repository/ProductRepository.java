@@ -11,8 +11,8 @@ import com.Quan.TryJWT.model.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
-	Boolean existsByName(String name);
-	List<Product> findAllByCategory(Category category, Pageable pageable);
-	List<Product> findAllByStatus(boolean status, Pageable pageable);
-	int countByCategory(Category category);
+	public Boolean existsByName(String name);
+	public List<Product> findAllByCategory(Category category, Pageable pageable);
+	public List<Product> findAllByStatus(boolean status, Pageable pageable);
+	public int countByCategory(Category category);
 }

@@ -39,16 +39,22 @@ import com.Quan.TryJWT.security.services.UserDetailsImpl;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	
 	@Autowired
 	AuthenticationManager authenticationManager;
+	
 	@Autowired
 	UserRepository userRepository;
+	
 	@Autowired
 	RoleRepository roleRepository;
+	
 	@Autowired
 	PasswordEncoder encoder;
+	
 	@Autowired
 	JwtUtils jwtUtils;
+	
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		Authentication authentication = authenticationManager.authenticate(
@@ -66,6 +72,7 @@ public class AuthController {
 												 userDetails.getEmail(), 
 												 roles));
 	}
+	
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {

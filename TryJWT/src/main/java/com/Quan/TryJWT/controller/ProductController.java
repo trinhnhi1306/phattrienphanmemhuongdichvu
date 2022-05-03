@@ -64,18 +64,18 @@ public class ProductController {
 //		return ResponseEntity.ok(output);
 //	}
 
-	@GetMapping(value = { "/get-product" })
-	public ResponseEntity<?> getProductById(@RequestParam(name = "idProduct") long idProduct) {
+	@GetMapping(value = { "/{id}" })
+	public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
 		Product product = null;
 		try {
-			product = productService.findById(idProduct);
+			product = productService.findById(id);
 		} catch (NotFoundException e) {
 			return ResponseEntity.badRequest().body("Product is unavaiable");
 		}
 		return ResponseEntity.ok(product);
 	}
 	
-	@RequestMapping(value = "get-image/{imageName}", method = RequestMethod.GET,
+	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET,
             produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {
 

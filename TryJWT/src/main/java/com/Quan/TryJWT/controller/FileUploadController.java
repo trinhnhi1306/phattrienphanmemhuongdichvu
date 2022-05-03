@@ -25,7 +25,7 @@ public class FileUploadController {
 	
 	public String saveFile(String fileName, MultipartFile file, String folder) {
 		Path uploadDirectory = Paths.get("src\\main\\resources\\images\\" + folder);
-		fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")) + fileName;
+		fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")) + StringUtils.delete(fileName, " ");
 		try(InputStream inputStream = file.getInputStream()) {
 			Path filePath = uploadDirectory.resolve(fileName);
 			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
