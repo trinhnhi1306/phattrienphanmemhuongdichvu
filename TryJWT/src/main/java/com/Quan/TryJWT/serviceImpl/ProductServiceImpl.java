@@ -92,4 +92,10 @@ public class ProductServiceImpl implements ProductService{
 	public void updateProduct(Product product) {
 		productRepository.save(product);
 	}
+
+	@Override
+	public List<Product> getAllProduct() {
+		// TODO Auto-generated method stub
+		return productRepository.findAll();
+	}
 }
