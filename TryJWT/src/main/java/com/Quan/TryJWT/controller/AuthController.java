@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -86,10 +87,19 @@ public class AuthController {
 					.body(new MessageResponse("Error: Email is already in use!"));
 		}
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), 
-							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()),signUpRequest.getPhone());
+		User user;
+		try {
+			user = new User(signUpRequest.getUsername(), 
+					 signUpRequest.getEmail(),
+					 encoder.encode(signUpRequest.getPassword()),signUpRequest.getPhone());
+		} catch (Exception e) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse(e.getMessage()));
+		}
+		
 		Set<String> strRoles = signUpRequest.getRole();
+		
 		Set<Role> roles = new HashSet<>();
 		if (strRoles == null) {
 			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -117,7 +127,9 @@ public class AuthController {
 		}
 		user.setRoles(roles);
 		user.setStatus(true);
-		user.setImage("Defaul.png");
+		if (user.getImage() == null || user.getImage().isEmpty()) {
+			user.setImage("userDefaul.png");
+		}
 		userRepository.save(user);
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
