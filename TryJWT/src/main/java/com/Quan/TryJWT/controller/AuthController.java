@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.ERole;
 import com.Quan.TryJWT.model.Role;
 import com.Quan.TryJWT.model.User;
@@ -118,8 +121,22 @@ public class AuthController {
 		user.setRoles(roles);
 		user.setStatus(true);
 		user.setImage("Defaul.png");
-		userRepository.save(user);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		
+		
+		
+		try {
+			
+			User userUpdated = userRepository.save(user);
+			return AppUtils.returnJS(HttpStatus.OK, "Ok", "User registered successfully!", userUpdated);
+		} catch (ConstraintViolationException e) {
+			// TODO: handle exception
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed!" +
+					AppUtils.getExceptionSql(e), null);
+
+		}
+		
+		
+//		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 	
 	@GetMapping("/user")

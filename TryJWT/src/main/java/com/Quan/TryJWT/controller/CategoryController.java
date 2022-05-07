@@ -13,6 +13,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,7 @@ import com.Quan.TryJWT.dto.CategoryOutput;
 import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.service.CategoryService;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController {
