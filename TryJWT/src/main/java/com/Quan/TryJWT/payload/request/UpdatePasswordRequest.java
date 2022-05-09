@@ -1,4 +1,4 @@
-package com.Quan.TryJWT.security;
+package com.Quan.TryJWT.payload.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -13,11 +13,14 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdatePasswordRequest {
-    @NotBlank
-    @Size(min = 3,max = 20)
-    private String username;
+	
+    private Long id;
 
     @NotBlank
     @Size(min = 6,max = 40)
-    private String password;
+    private String oldPassword;
+    
+    @NotBlank
+    @Size(min = 6,max = 40)
+    private String newPassword;
 }

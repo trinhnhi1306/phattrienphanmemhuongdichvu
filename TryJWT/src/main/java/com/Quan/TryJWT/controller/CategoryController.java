@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.CategoryOutput;
 import com.Quan.TryJWT.model.Category;
-import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.service.CategoryService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
