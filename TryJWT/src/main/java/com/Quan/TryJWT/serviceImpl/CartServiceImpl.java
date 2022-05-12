@@ -49,12 +49,6 @@ public class CartServiceImpl implements CartService {
 		return cartRepository.save(cart);
 	}
 
-
-	@Override
-	public Cart updateCart(Cart cart) {
-		return cartRepository.save(cart);
-	}
-
 	@Override
 	@Transactional
 	public void deleteCart(long id) {

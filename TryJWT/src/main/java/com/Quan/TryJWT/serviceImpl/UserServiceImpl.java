@@ -17,14 +17,11 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	UserRepository userRepository;
-	
-	@Autowired
-	UserRepository userRespository;
 
 
 	@Override
 	public User findById(long userId) {
-		Optional<User> user = userRespository.findById(userId);
+		Optional<User> user = userRepository.findById(userId);
 		if(!user.isPresent()) {
 			throw new NotFoundException("User not found by id"); 
 		}
@@ -33,22 +30,22 @@ public class UserServiceImpl implements UserService{
 	
 	@Override
 	public Boolean existsByUsername(String username) {
-		return userRespository.existsByUsername(username);
+		return userRepository.existsByUsername(username);
 	}
 
 	@Override
 	public Boolean existsByEmail(String email) {
-		return userRespository.existsByEmail(email);
+		return userRepository.existsByEmail(email);
 	}
 
 	@Override
 	public Boolean existsByPhone(String phone) {
-		return userRespository.existsByPhone(phone);
+		return userRepository.existsByPhone(phone);
 	}
 
 	@Override
 	public void updateProfile(User user) {
-		userRespository.save(user);
+		userRepository.save(user);
 	}
 
 	@Override
@@ -61,7 +58,7 @@ public class UserServiceImpl implements UserService{
 	public User getUserByUsername(String username) {
 		// TODO Auto-generated method stub
 		Optional<User> option = userRepository.findByUsername(username) ;
-		if(option.isEmpty()) {
+		if(option.isPresent()) {
 			 return null;
 		}
 		return  option.get() ;
