@@ -87,9 +87,9 @@ public class AddressAPI {
 //    	listAddressValues.add(String.valueOf(address.getAddressId()));
 //    	listAddressValues.add(address.getSpecificAddress());
 //    	listAddressValues.add(String.valueOf(address.getWard().getWardId()));
-//    	listAddressValues.add(String.valueOf(address.getWard().getDistrict().getDistrictId()));
-//    	listAddressValues.add(String.valueOf(address.getWard().getDistrict().getProvince().getProvinceId()));
-//        return  listAddressValues;
+//    	listAddressValues.add(String.valueOf(address.getWard().getDistrict().getDistrictId()));1
+//    	listAddressValues.add(String.valueOf(address.getWard().getDistrict().getProvince().getProvinceId()));2
+//        return  listAddressValues;3
 //    }
 
 
