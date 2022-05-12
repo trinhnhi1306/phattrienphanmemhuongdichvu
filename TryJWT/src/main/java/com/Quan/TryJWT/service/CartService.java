@@ -14,6 +14,7 @@ public interface CartService {
 	public Cart findByUserIdAndProductId(long userId, long productId);
 	
 	public Cart saveCart(Cart cart);
+	public void deleteCart(long id);
 
 	public List<Cart> getCartByUser(User user);
 	
@@ -23,11 +24,4 @@ public interface CartService {
 	public void addNewItem(User user, Product product, int quatity);
 	public void deleteItems(User user, Product product);
 	public void deleteCartAfterBuy(User user);
-	
-
-	public List<Cart> getAllByUserId(long userId);
-	public Cart addCart(Cart cart);
-
-	public Cart updateCart(Cart cart);
-	public void deleteCart(long id);
 }
