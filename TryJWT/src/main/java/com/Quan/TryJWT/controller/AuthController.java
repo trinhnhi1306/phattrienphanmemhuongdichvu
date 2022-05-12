@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
+import com.Quan.TryJWT.Exception.ResponseObject;
 import com.Quan.TryJWT.model.ERole;
 import com.Quan.TryJWT.model.Role;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.payload.request.LoginRequest;
 import com.Quan.TryJWT.payload.request.SignupRequest;
 import com.Quan.TryJWT.payload.response.JwtResponse;
-import com.Quan.TryJWT.payload.response.MessageResponse;
 import com.Quan.TryJWT.repository.RoleRepository;
 import com.Quan.TryJWT.repository.UserRepository;
 import com.Quan.TryJWT.security.jwt.JwtUtils;
@@ -77,21 +77,25 @@ public class AuthController {
 	}
 	
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<ResponseObject> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {		
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Username is already taken!"));
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+					"Username is already taken!", null);
 		}
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MessageResponse("Error: Email is already in use!"));
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+					"Email is already in use!", null);
 		}
+		if (userRepository.existsByPhone(signUpRequest.getPhone())) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+					"Phone is already in use!", null);
+		}
+		
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
-							 signUpRequest.getEmail(),
-							 encoder.encode(signUpRequest.getPassword()),signUpRequest.getPhone());
+				 signUpRequest.getEmail(),
+				 encoder.encode(signUpRequest.getPassword()),signUpRequest.getPhone());;
+		
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
 		if (strRoles == null) {
@@ -120,12 +124,11 @@ public class AuthController {
 		}
 		user.setRoles(roles);
 		user.setStatus(true);
-		user.setImage("Defaul.png");
+		if (user.getImage() == null || user.getImage().isEmpty()) {
+			user.setImage("userDefaul.png");
+		}
 		
-		
-		
-		try {
-			
+		try {		
 			User userUpdated = userRepository.save(user);
 			return AppUtils.returnJS(HttpStatus.OK, "Ok", "User registered successfully!", userUpdated);
 		} catch (ConstraintViolationException e) {
@@ -134,9 +137,6 @@ public class AuthController {
 					AppUtils.getExceptionSql(e), null);
 
 		}
-		
-		
-//		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 	
 	@GetMapping("/user")

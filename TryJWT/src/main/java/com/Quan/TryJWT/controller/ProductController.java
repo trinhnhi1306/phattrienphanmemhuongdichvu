@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.ProductOutput;
 import com.Quan.TryJWT.model.Product;
-import com.Quan.TryJWT.payload.response.MessageResponse;
 import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
