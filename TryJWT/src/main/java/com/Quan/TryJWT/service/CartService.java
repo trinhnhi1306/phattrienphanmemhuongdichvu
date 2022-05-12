@@ -8,6 +8,13 @@ import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.model.User;
 
 public interface CartService {
+  
+	public Cart findById(long id);
+	public List<Cart> findByUserId(long userId);
+	public Cart findByUserIdAndProductId(long userId, long productId);
+	
+	public Cart saveCart(Cart cart);
+
 	public List<Cart> getCartByUser(User user);
 	
 	
@@ -20,6 +27,7 @@ public interface CartService {
 
 	public List<Cart> getAllByUserId(long userId);
 	public Cart addCart(Cart cart);
+
 	public Cart updateCart(Cart cart);
-	public void deleteCart(Cart cart);
+	public void deleteCart(long id);
 }
