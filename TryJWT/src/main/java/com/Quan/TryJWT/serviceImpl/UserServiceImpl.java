@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService{
 	public User getUserByUsername(String username) {
 		// TODO Auto-generated method stub
 		Optional<User> option = userRepository.findByUsername(username) ;
-		if(option.isPresent()) {
+		if(!option.isPresent()) {
 			 return null;
 		}
 		return  option.get() ;
