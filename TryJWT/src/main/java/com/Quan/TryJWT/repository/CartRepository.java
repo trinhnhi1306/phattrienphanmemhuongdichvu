@@ -14,10 +14,20 @@ import com.Quan.TryJWT.model.User;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long>{
-	
+  
 	@Query(value = "SELECT * FROM Cart WHERE user_id = :userId AND quantity > 0", 
 			nativeQuery = true)
 	public List<Cart> findByUserId(@Param("userId") long userId);
 	
 	public Cart findByUserAndProduct(User user, Product product);
+  
+	public List<Cart> findByUser(User user);
+	
+	public List<Cart> findAllByProduct(Product product);
+	public Cart findByUserAndProduct(User user, Product product);
+	
+	public void deleteByUser(User user);
+
+
+	public List<Cart> findAllByUser(User user);
 }

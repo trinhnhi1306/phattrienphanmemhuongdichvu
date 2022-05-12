@@ -99,4 +99,10 @@ public class ProductServiceImpl implements ProductService{
 		// TODO Auto-generated method stub
 		return productRepository.findAll();
 	}
+
+	@Override
+	public Product getProductById(long id) {
+		// TODO Auto-generated method stub
+		return productRepository.getById(id);
+	}
 }
