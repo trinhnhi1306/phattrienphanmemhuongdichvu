@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.ProductOutput;
 import com.Quan.TryJWT.model.Product;
-import com.Quan.TryJWT.payload.response.MessageResponse;
 import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
@@ -40,10 +39,10 @@ public class ProductController {
 
 	@Autowired
 	ProductService productService;
-	
+
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@Autowired
 	BrandService brandService;
 
@@ -74,32 +73,26 @@ public class ProductController {
 		}
 		return ResponseEntity.ok(product);
 	}
-	
-	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET,
-            produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {
+
+	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {
 
 		try {
 			ClassPathResource imgFile = new ClassPathResource("images/products/" + imageName);
-			return ResponseEntity
-	                .ok()
-	                .contentType(MediaType.IMAGE_JPEG)
-	                .body(new InputStreamResource(imgFile.getInputStream()));
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Image not found!");
-		}       
-    }
-	
+		}
+	}
+
 	@PostMapping
 	public ResponseEntity<?> postProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
 		if (productService.existsByName(product.getName())) {
-			return ResponseEntity
-					.badRequest()
-					.body("Error: Product name is already taken!");
+			return ResponseEntity.badRequest().body("Error: Product name is already taken!");
 		}
 		if (bindingResult.hasErrors())
-			return ResponseEntity
-					.badRequest()
+			return ResponseEntity.badRequest()
 					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
 		Product newProduct = product;
 		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
@@ -107,13 +100,13 @@ public class ProductController {
 		productService.addProduct(newProduct);
 		return ResponseEntity.ok("Add product successfully!");
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
 		Product product = null;
 		try {
 			product = productService.findById(id);
-			if(product.getOrderDetails().size() > 0)
+			if (product.getOrderDetails().size() > 0)
 				return ResponseEntity.badRequest().body("Product is in use");
 		} catch (NotFoundException e) {
 			return ResponseEntity.badRequest().body("Product is unavaiable");
@@ -121,39 +114,37 @@ public class ProductController {
 		productService.deleteProduct(product);
 		return ResponseEntity.ok("Remove product successfully!");
 	}
-	
+
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> putProduct(@PathVariable("id") long id, @Valid @RequestBody Product newProduct, BindingResult bindingResult) {
+	public ResponseEntity<?> putProduct(@PathVariable("id") long id, @Valid @RequestBody Product newProduct,
+			BindingResult bindingResult) {
 		Product oldProduct = null;
 		try {
 			oldProduct = productService.findById(id);
-			if (productService.existsByName(newProduct.getName()) && !newProduct.getName().equals(oldProduct.getName())) {
-				return ResponseEntity
-						.badRequest()
-						.body("Error: Product name is already taken!");
+			if (productService.existsByName(newProduct.getName())
+					&& !newProduct.getName().equals(oldProduct.getName())) {
+				return ResponseEntity.badRequest().body("Error: Product name is already taken!");
 			}
 			if (bindingResult.hasErrors())
-				return ResponseEntity
-						.badRequest()
+				return ResponseEntity.badRequest()
 						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
 			newProduct.setBrand(brandService.findById(newProduct.getBrand().getBrandId()));
 			newProduct.setCategory(categoryService.findById(newProduct.getCategory().getCategoryId()));
 		} catch (NotFoundException e) {
 			return ResponseEntity.badRequest().body("Product is unavaiable");
 		}
-		
+
 		productService.updateProduct(newProduct);
 		return ResponseEntity.ok("Update product successfully!");
 	}
-	
+
 	@GetMapping("")
-	public ResponseEntity<ProductOutput> findProducts(			
-			@RequestParam(value = "pageNo", required = false) Optional<Integer> pPageNo, 
+	public ResponseEntity<ProductOutput> findProducts(
+			@RequestParam(value = "pageNo", required = false) Optional<Integer> pPageNo,
 			@RequestParam(value = "pageSize", required = false) Optional<Integer> pPageSize,
-			@RequestParam(value = "sortField", required = false) Optional<String> pSortField, 
+			@RequestParam(value = "sortField", required = false) Optional<String> pSortField,
 			@RequestParam(value = "sortDirection", required = false) Optional<String> pSortDir,
-			@RequestParam(value = "categoryId", required = false) Optional<Long> pCategoryId) 
-	{
+			@RequestParam(value = "categoryId", required = false) Optional<Long> pCategoryId) {
 		int pageNo = 1;
 		int pageSize = 10;
 		String sortField = "productId";
@@ -170,19 +161,18 @@ public class ProductController {
 		if (pSortDir.isPresent()) {
 			sortDirection = pSortDir.get();
 		}
-		
+
 		int totalPage;
 		List<Product> products = new ArrayList<Product>();
 		if (pCategoryId.isPresent()) {
 			long categoryId = pCategoryId.get();
 			totalPage = (int) Math.ceil((double) (productService.getCountByCategoryId(categoryId)) / pageSize);
 			products = productService.getAllByCategoryId(categoryId, pageNo, pageSize, sortField, sortDirection);
-		}
-		else {
+		} else {
 			totalPage = (int) Math.ceil((double) (productService.getCount()) / pageSize);
 			products = productService.getAllByStatus(true, pageNo, pageSize, sortField, sortDirection);
 		}
-		
+
 		ProductOutput output = new ProductOutput();
 		output.setPage(pageNo);
 		output.setTotalPage(totalPage);
