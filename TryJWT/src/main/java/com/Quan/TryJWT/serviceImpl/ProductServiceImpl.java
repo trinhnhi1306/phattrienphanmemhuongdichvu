@@ -66,7 +66,6 @@ public class ProductServiceImpl implements ProductService{
 	public Product findById(long idProduct) {
 		Optional<Product> product = productRepository.findById(idProduct);
 		if(!product.isPresent()) {
-//			throw new NotFoundException("Product not found by id");
 			return null;
 		}
 		return product.get();

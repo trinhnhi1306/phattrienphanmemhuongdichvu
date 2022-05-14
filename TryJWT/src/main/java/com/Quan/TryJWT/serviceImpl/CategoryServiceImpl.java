@@ -30,7 +30,7 @@ public class CategoryServiceImpl implements CategoryService{
 	public Category findById(long id) {
 		Optional<Category> category = categoryRepository.findById(id);
 		if(!category.isPresent()) {
-			throw new NotFoundException("Category not found by id"); 
+			return null;
 		}
 		return category.get();
 	}
