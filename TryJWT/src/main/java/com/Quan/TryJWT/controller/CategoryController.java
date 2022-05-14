@@ -37,35 +37,31 @@ public class CategoryController {
 
 	@Autowired
 	CategoryService categoryService;
-	
+
 	@GetMapping(value = "/all")
 	public ResponseEntity<List<Category>> getAllCategories() {
 		List<Category> list = categoryService.findAll();
 		return ResponseEntity.ok(list);
 	}
-	
-	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET,
-            produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {
+
+	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+	public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {
 
 		try {
 			ClassPathResource imgFile = new ClassPathResource("images/categories/" + imageName);
-			return ResponseEntity
-	                .ok()
-	                .contentType(MediaType.IMAGE_JPEG)
-	                .body(new InputStreamResource(imgFile.getInputStream()));
+			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
+					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Image not found!");
-		}       
-    }
-	
+		}
+	}
+
 	@GetMapping
-	public ResponseEntity<CategoryOutput> findCategories(			
-			@RequestParam(value = "pageNo", required = false) Optional<Integer> pPageNo, 
+	public ResponseEntity<CategoryOutput> findCategories(
+			@RequestParam(value = "pageNo", required = false) Optional<Integer> pPageNo,
 			@RequestParam(value = "pageSize", required = false) Optional<Integer> pPageSize,
-			@RequestParam(value = "sortField", required = false) Optional<String> pSortField, 
-			@RequestParam(value = "sortDirection", required = false) Optional<String> pSortDir) 
-	{
+			@RequestParam(value = "sortField", required = false) Optional<String> pSortField,
+			@RequestParam(value = "sortDirection", required = false) Optional<String> pSortDir) {
 		int pageNo = 1;
 		int pageSize = 10;
 		String sortField = "categoryId";
@@ -82,21 +78,20 @@ public class CategoryController {
 		if (pSortDir.isPresent()) {
 			sortDirection = pSortDir.get();
 		}
-		
+
 		int totalPage;
 		List<Category> categories = new ArrayList<Category>();
-		
+
 		totalPage = (int) Math.ceil((double) (categoryService.getCount()) / pageSize);
 		categories = categoryService.getPage(pageNo, pageSize, sortField, sortDirection).getContent();
-		
-		
+
 		CategoryOutput output = new CategoryOutput();
 		output.setPage(pageNo);
 		output.setTotalPage(totalPage);
 		output.setListResult(categories);
 		return ResponseEntity.ok(output);
 	}
-	
+
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
 		Category category = null;
@@ -107,8 +102,8 @@ public class CategoryController {
 		}
 		return ResponseEntity.ok(category);
 	}
-	
-	@PostMapping
+
+		@PostMapping
 	public ResponseBody postCategory(@Valid @RequestBody Category category, BindingResult bindingResult) {
 		if (categoryService.existsByName(category.getName())) {
 //			return ResponseEntity
@@ -126,8 +121,8 @@ public class CategoryController {
 //		return ResponseEntity.ok("Add category successfully!");
 		return new ResponseBody(200, "Add category successfully!", category);
 	}
-	
-	@PutMapping(value = "/{id}")
+  
+  @PutMapping(value = "/{id}")
 	public ResponseBody putCategory(@PathVariable("id") long id, @Valid @RequestBody Category newCategory, BindingResult bindingResult) {
 		Category oldCategory = null;
 		try {
@@ -156,8 +151,8 @@ public class CategoryController {
 //		return ResponseEntity.ok("Update category successfully!");
 		return new ResponseBody(200, "Update category successfully!", category);
 	}
-	
-	@DeleteMapping(value = "/{id}")
+  
+  @DeleteMapping(value = "/{id}")
 	public ResponseBody deleteCategory(@PathVariable("id") long id) {
 		Category category = null;
 		try {
@@ -172,5 +167,6 @@ public class CategoryController {
 		categoryService.deleteCategory(category);
 //		return ResponseEntity.ok("Remove category successfully!");
 		return new ResponseBody(200, "Remove category successfully!", category);
+	}
 	}
 }
