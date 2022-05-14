@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.CategoryOutput;
 import com.Quan.TryJWT.model.Category;
+import com.Quan.TryJWT.payload.response.ResponseBody;
 import com.Quan.TryJWT.service.CategoryService;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -108,54 +109,68 @@ public class CategoryController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<?> postCategory(@Valid @RequestBody Category category, BindingResult bindingResult) {
+	public ResponseBody postCategory(@Valid @RequestBody Category category, BindingResult bindingResult) {
 		if (categoryService.existsByName(category.getName())) {
-			return ResponseEntity
-					.badRequest()
-					.body("Error: Category name is already taken!");
+//			return ResponseEntity
+//					.badRequest()
+//					.body("Error: Category name is already taken!");
+			return new ResponseBody(400, "Error: Category name is already taken!", null);
 		}
-		if (bindingResult.hasErrors())
-			return ResponseEntity
-					.badRequest()
-					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
-
-		categoryService.addCategory(category);
-		return ResponseEntity.ok("Add category successfully!");
-	}
-	
-	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<?> deleteCategory(@PathVariable("id") long id) {
-		Category category = null;
-		try {
-			category = categoryService.findById(id);
-			if(category.getProducts().size() > 0)
-				return ResponseEntity.badRequest().body("Category is in use");
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Category is unavaiable");
+		if (bindingResult.hasErrors()) {
+//			return ResponseEntity
+//					.badRequest()
+//					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+			return new ResponseBody(500, "Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
 		}
-		categoryService.deleteCategory(category);
-		return ResponseEntity.ok("Remove category successfully!");
+		category = categoryService.addCategory(category);
+//		return ResponseEntity.ok("Add category successfully!");
+		return new ResponseBody(200, "Add category successfully!", category);
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> putProduct(@PathVariable("id") long id, @Valid @RequestBody Category newCategory, BindingResult bindingResult) {
+	public ResponseBody putCategory(@PathVariable("id") long id, @Valid @RequestBody Category newCategory, BindingResult bindingResult) {
 		Category oldCategory = null;
 		try {
 			oldCategory = categoryService.findById(id);
 			if (categoryService.existsByName(newCategory.getName()) && !newCategory.getName().equals(oldCategory.getName())) {
-				return ResponseEntity
-						.badRequest()
-						.body("Error: Category name is already taken!");
+//				return ResponseEntity
+//						.badRequest()
+//						.body("Error: Category name is already taken!");
+				return new ResponseBody(400, "Error: Category name is already taken!", null);
 			}
 			if (bindingResult.hasErrors())
-				return ResponseEntity
-						.badRequest()
-						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+			{
+//				return ResponseEntity
+//						.badRequest()
+//						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+				return new ResponseBody(500, "Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+			}
+				
 		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Category is unavaiable");
+//			return ResponseEntity.badRequest().body("Category is unavailable");
+			return new ResponseBody(404, "Category is unavailable", null);
 		}
 		
-		categoryService.updateCategory(newCategory);
-		return ResponseEntity.ok("Update category successfully!");
+		newCategory.setCategoryId(id);
+		Category category = categoryService.updateCategory(newCategory);
+//		return ResponseEntity.ok("Update category successfully!");
+		return new ResponseBody(200, "Update category successfully!", category);
+	}
+	
+	@DeleteMapping(value = "/{id}")
+	public ResponseBody deleteCategory(@PathVariable("id") long id) {
+		Category category = null;
+		try {
+			category = categoryService.findById(id);
+			if(category.getProducts().size() > 0)
+//				return ResponseEntity.badRequest().body("Category is in use");
+			return new ResponseBody(400, "Category is in use", null);
+		} catch (NotFoundException e) {
+//			return ResponseEntity.badRequest().body("Category is unavaiable");
+			return new ResponseBody(404, "Category is unavailable", null);
+		}
+		categoryService.deleteCategory(category);
+//		return ResponseEntity.ok("Remove category successfully!");
+		return new ResponseBody(200, "Remove category successfully!", category);
 	}
 }
