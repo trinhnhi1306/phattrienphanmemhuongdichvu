@@ -32,6 +32,9 @@ import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
 
+import io.swagger.annotations.ApiOperation;
+
+
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/product")
@@ -179,4 +182,10 @@ public class ProductController {
 		output.setListResult(products);
 		return ResponseEntity.ok(output);
 	}
+	
+	@ApiOperation(value="Lấy tất cả danh sách sản phẩm")
+    @GetMapping("/all")
+    public ResponseEntity<List<Product>> getAllProduct(){
+        return ResponseEntity.ok(productService.getAllProduct());
+    }
 }

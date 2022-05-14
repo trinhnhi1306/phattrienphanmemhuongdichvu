@@ -12,4 +12,12 @@ public interface UserService {
 	public List<User> getAllByStatus(boolean status, int pageNo, int pageSize, String sortField, String sortDirection);
 
 	public User findById(long idUser);
+
+	public User getUserByUsername(String username);
+
+	Boolean existsByEmail(String email);
+
+	Boolean existsByPhone(String phone);
+
+	void updateProfile(User user);
 }

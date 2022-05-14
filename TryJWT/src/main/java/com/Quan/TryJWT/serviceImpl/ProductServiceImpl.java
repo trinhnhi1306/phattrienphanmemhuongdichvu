@@ -66,7 +66,8 @@ public class ProductServiceImpl implements ProductService{
 	public Product findById(long idProduct) {
 		Optional<Product> product = productRepository.findById(idProduct);
 		if(!product.isPresent()) {
-			throw new NotFoundException("Product not found by id"); 
+//			throw new NotFoundException("Product not found by id");
+			return null;
 		}
 		return product.get();
 	}
@@ -90,5 +91,17 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public void updateProduct(Product product) {
 		productRepository.save(product);
+	}
+
+	@Override
+	public List<Product> getAllProduct() {
+		// TODO Auto-generated method stub
+		return productRepository.findAll();
+	}
+
+	@Override
+	public Product getProductById(long id) {
+		// TODO Auto-generated method stub
+		return productRepository.getById(id);
 	}
 }
