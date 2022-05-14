@@ -26,6 +26,7 @@ public class FileUploadController {
 	public String saveFile(String fileName, MultipartFile file, String folder) {
 		Path uploadDirectory = Paths.get("src\\main\\resources\\images\\" + folder);
 		fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMddHHmmss")) + StringUtils.delete(fileName, " ");
+		
 		try(InputStream inputStream = file.getInputStream()) {
 			Path filePath = uploadDirectory.resolve(fileName);
 			Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -33,6 +34,7 @@ public class FileUploadController {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.err.println(fileName);
 		return fileName;
 	}
 
@@ -50,7 +52,7 @@ public class FileUploadController {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		
 		String newFileName = saveFile(fileName, file, "categories");
-		
+		System.err.println(newFileName);
 		return ResponseEntity.ok(newFileName);
 	}
 	

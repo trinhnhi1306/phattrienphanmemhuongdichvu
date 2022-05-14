@@ -13,7 +13,7 @@ public interface CategoryService {
 	public Page<Category> getPage(int pageNo, int pageSize, String sortField, String sortDirection);
 	public int getCount();
 	public Boolean existsByName(String name);
-	public void addCategory(Category category);
+	public Category addCategory(Category category);
 	public void deleteCategory(Category category);
-	public void updateCategory(Category category);
+	public Category updateCategory(Category category);
 }
