@@ -168,5 +168,5 @@ public class CategoryController {
 //		return ResponseEntity.ok("Remove category successfully!");
 		return new ResponseBody(200, "Remove category successfully!", category);
 	}
-	}
+	
 }

@@ -132,7 +132,7 @@ public class CartController {
 		String username = principal.getName();
 		User user = userService.getUserByUsername(username);
 		
-		int maximumQuantity = product.getQuantity();
+		
 		
 		CartSupport cartSupport = new CartSupport(cartService.getCartByUser(user));
 		

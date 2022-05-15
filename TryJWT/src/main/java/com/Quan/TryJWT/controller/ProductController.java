@@ -74,7 +74,7 @@ public class ProductController {
 		} catch (NotFoundException e) {
 			return ResponseEntity.badRequest().body("Product is unavaiable");
 		}
-		return ResponseEntity.ok(product);
+		return ResponseEntity.badRequest().body("Product is unavaiable");
 	}
 
 	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
