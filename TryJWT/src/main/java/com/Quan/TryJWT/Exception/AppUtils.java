@@ -27,15 +27,10 @@ public class AppUtils {
         return errorMessage;
 }
 
-public static ResponseEntity<ResponseObject> returnJS(HttpStatus httpStatus, String status,
-    String message, Object object) {
+	public static ResponseEntity<ResponseObject> returnJS(HttpStatus httpStatus, String message, Object object) {
 
         return ResponseEntity.status(httpStatus)
-                .body(
-                        new ResponseObject(
-                                status, message, object)
-
-                );
+                .body(new ResponseObject(message, object));
     }
 
 }

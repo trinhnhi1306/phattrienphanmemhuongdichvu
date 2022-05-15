@@ -30,7 +30,7 @@ public class BrandServiceImpl implements BrandService{
 	public Brand findById(long id) {
 		Optional<Brand> brand = brandRepository.findById(id);
 		if(!brand.isPresent()) {
-			throw new NotFoundException("Brand not found by id"); 
+			return null;
 		}
 		return brand.get();
 	}

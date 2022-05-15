@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.ProductOutput;
 import com.Quan.TryJWT.model.Product;
@@ -69,10 +71,11 @@ public class ProductController {
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
 		Product product = null;
-		try {
-			product = productService.findById(id);
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Product is unavaiable");
+		
+		product = productService.findById(id);
+		
+		if(product == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
 		}
 		return ResponseEntity.badRequest().body("Product is unavaiable");
 	}
@@ -85,60 +88,66 @@ public class ProductController {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
 					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Image not found!");
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Image not found", null);
 		}
 	}
 
 	@PostMapping
 	public ResponseEntity<?> postProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
 		if (productService.existsByName(product.getName())) {
-			return ResponseEntity.badRequest().body("Error: Product name is already taken!");
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product name is already taken!", null);
 		}
+		
 		if (bindingResult.hasErrors())
-			return ResponseEntity.badRequest()
-					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+		
 		Product newProduct = product;
 		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
 		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
 		productService.addProduct(newProduct);
-		return ResponseEntity.ok("Add product successfully!");
+		return AppUtils.returnJS(HttpStatus.OK, "Add product successfully!", newProduct);
 	}
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
 		Product product = null;
-		try {
-			product = productService.findById(id);
-			if (product.getOrderDetails().size() > 0)
-				return ResponseEntity.badRequest().body("Product is in use");
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Product is unavaiable");
+		
+		product = productService.findById(id);
+		
+		if(product == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
 		}
+		
+		if (product.getOrderDetails().size() > 0)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is in use", null);
+			
 		productService.deleteProduct(product);
-		return ResponseEntity.ok("Remove product successfully!");
+		return AppUtils.returnJS(HttpStatus.OK, "Delete product successfully!", null);
 	}
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> putProduct(@PathVariable("id") long id, @Valid @RequestBody Product newProduct,
 			BindingResult bindingResult) {
 		Product oldProduct = null;
-		try {
-			oldProduct = productService.findById(id);
-			if (productService.existsByName(newProduct.getName())
-					&& !newProduct.getName().equals(oldProduct.getName())) {
-				return ResponseEntity.badRequest().body("Error: Product name is already taken!");
-			}
-			if (bindingResult.hasErrors())
-				return ResponseEntity.badRequest()
-						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
-			newProduct.setBrand(brandService.findById(newProduct.getBrand().getBrandId()));
-			newProduct.setCategory(categoryService.findById(newProduct.getCategory().getCategoryId()));
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Product is unavaiable");
+		
+		oldProduct = productService.findById(id);
+		
+		if(oldProduct == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", oldProduct);
 		}
+		
+		if (productService.existsByName(newProduct.getName())
+				&& !newProduct.getName().equals(oldProduct.getName())) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product name is already taken!", null);
+		}
+		if (bindingResult.hasErrors())
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+		
+		newProduct.setBrand(brandService.findById(newProduct.getBrand().getBrandId()));
+		newProduct.setCategory(categoryService.findById(newProduct.getCategory().getCategoryId()));
 
 		productService.updateProduct(newProduct);
-		return ResponseEntity.ok("Update product successfully!");
+		return AppUtils.returnJS(HttpStatus.OK, "Update product successfully!", newProduct);
 	}
 
 	@GetMapping("")

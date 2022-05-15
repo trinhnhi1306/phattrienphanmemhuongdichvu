@@ -3,6 +3,7 @@ package com.Quan.TryJWT.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
@@ -30,11 +32,9 @@ public class OrderController {
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getOrderById(@PathVariable("id") long id) {
 		Order order = null;
-		try {
-			order = orderService.findById(id);
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Order is unavaiable");
-		}
+		order = orderService.findById(id);
+		if(order == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		return ResponseEntity.ok(order);
 	}
 	
@@ -44,7 +44,7 @@ public class OrderController {
 		try {
 			order = orderService.findByStatusId(statusId);
 		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Order is unavaiable");
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		}
 		return ResponseEntity.ok(order);
 	}
@@ -55,7 +55,7 @@ public class OrderController {
 		try {
 			list = orderService.findOrderDetailByOrderId(orderId);
 		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Order is unavaiable");
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		}
 		return ResponseEntity.ok(list);
 	}
@@ -63,13 +63,15 @@ public class OrderController {
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> putOrder(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
 		Order order = null;
-		try {
-			order = orderService.findById(id);
-			orderService.updateOrder(order, statusId);
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Order is unavaiable");
-		}
-		return ResponseEntity.ok("Update order successfully!");
+
+		order = orderService.findById(id);
+		
+		if(order == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
+		
+		orderService.updateOrder(order, statusId);
+		
+		return AppUtils.returnJS(HttpStatus.OK, "Update order successfully!", null);
 	}
 	
 }

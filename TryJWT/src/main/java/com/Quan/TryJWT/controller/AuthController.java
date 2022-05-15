@@ -79,15 +79,15 @@ public class AuthController {
 	@PostMapping("/signup")
 	public ResponseEntity<ResponseObject> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {		
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
 					"Username is already taken!", null);
 		}
 		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
 					"Email is already in use!", null);
 		}
 		if (userRepository.existsByPhone(signUpRequest.getPhone())) {
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed! " +
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
 					"Phone is already in use!", null);
 		}
 		
@@ -130,10 +130,10 @@ public class AuthController {
 		
 		try {		
 			User userUpdated = userRepository.save(user);
-			return AppUtils.returnJS(HttpStatus.OK, "Ok", "User registered successfully!", userUpdated);
+			return AppUtils.returnJS(HttpStatus.OK, "User registered successfully!", userUpdated);
 		} catch (ConstraintViolationException e) {
 			// TODO: handle exception
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Failed", "User registered failed!" +
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST,  "User registered failed!" +
 					AppUtils.getExceptionSql(e), null);
 
 		}

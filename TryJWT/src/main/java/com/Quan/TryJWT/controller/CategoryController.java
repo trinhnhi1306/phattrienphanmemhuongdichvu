@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.CategoryOutput;
 import com.Quan.TryJWT.model.Category;
@@ -52,7 +54,7 @@ public class CategoryController {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
 					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Image not found!");
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Image not found", null);
 		}
 	}
 
@@ -95,78 +97,64 @@ public class CategoryController {
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getProductById(@PathVariable("id") long id) {
 		Category category = null;
-		try {
-			category = categoryService.findById(id);
-		} catch (NotFoundException e) {
-			return ResponseEntity.badRequest().body("Category is unavaiable");
-		}
+		
+		category = categoryService.findById(id);
+		
+		if(category == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category is unavaiable", null);
+		
 		return ResponseEntity.ok(category);
 	}
 
-		@PostMapping
-	public ResponseBody postCategory(@Valid @RequestBody Category category, BindingResult bindingResult) {
+	@PostMapping
+	public ResponseEntity<?> postCategory(@Valid @RequestBody Category category, BindingResult bindingResult) {
 		if (categoryService.existsByName(category.getName())) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body("Error: Category name is already taken!");
-			return new ResponseBody(400, "Error: Category name is already taken!", null);
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category name is already taken!", null);
 		}
 		if (bindingResult.hasErrors()) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
-			return new ResponseBody(500, "Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
 		}
 		category = categoryService.addCategory(category);
-//		return ResponseEntity.ok("Add category successfully!");
-		return new ResponseBody(200, "Add category successfully!", category);
+		return AppUtils.returnJS(HttpStatus.OK, "Add category successfully!", category);
 	}
   
-  @PutMapping(value = "/{id}")
-	public ResponseBody putCategory(@PathVariable("id") long id, @Valid @RequestBody Category newCategory, BindingResult bindingResult) {
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<?> putCategory(@PathVariable("id") long id, @Valid @RequestBody Category newCategory, BindingResult bindingResult) {
 		Category oldCategory = null;
-		try {
-			oldCategory = categoryService.findById(id);
-			if (categoryService.existsByName(newCategory.getName()) && !newCategory.getName().equals(oldCategory.getName())) {
-//				return ResponseEntity
-//						.badRequest()
-//						.body("Error: Category name is already taken!");
-				return new ResponseBody(400, "Error: Category name is already taken!", null);
-			}
-			if (bindingResult.hasErrors())
-			{
-//				return ResponseEntity
-//						.badRequest()
-//						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
-				return new ResponseBody(500, "Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
-			}
-				
-		} catch (NotFoundException e) {
-//			return ResponseEntity.badRequest().body("Category is unavailable");
-			return new ResponseBody(404, "Category is unavailable", null);
+	
+		oldCategory = categoryService.findById(id);
+		if(oldCategory == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category is unavaiable", null);
+		
+		if (categoryService.existsByName(newCategory.getName()) && !newCategory.getName().equals(oldCategory.getName())) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category name is already taken!", null);
+		}
+		if (bindingResult.hasErrors()) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
 		}
 		
 		newCategory.setCategoryId(id);
 		Category category = categoryService.updateCategory(newCategory);
-//		return ResponseEntity.ok("Update category successfully!");
-		return new ResponseBody(200, "Update category successfully!", category);
+		return AppUtils.returnJS(HttpStatus.OK, "Add category successfully!", category);
 	}
   
-  @DeleteMapping(value = "/{id}")
-	public ResponseBody deleteCategory(@PathVariable("id") long id) {
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<?> deleteCategory(@PathVariable("id") long id) {
 		Category category = null;
-		try {
-			category = categoryService.findById(id);
-			if(category.getProducts().size() > 0)
-//				return ResponseEntity.badRequest().body("Category is in use");
-			return new ResponseBody(400, "Category is in use", null);
-		} catch (NotFoundException e) {
-//			return ResponseEntity.badRequest().body("Category is unavaiable");
-			return new ResponseBody(404, "Category is unavailable", null);
-		}
+
+		category = categoryService.findById(id);
+		
+		if(category == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category is unavaiable", null);
+		
+		if(category.getProducts().size() > 0)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Category is in use", null);
+		
 		categoryService.deleteCategory(category);
-//		return ResponseEntity.ok("Remove category successfully!");
-		return new ResponseBody(200, "Remove category successfully!", category);
-	}
+
+
+		return AppUtils.returnJS(HttpStatus.OK, "Remove category successfully!", null);
 	
+	}
+
 }

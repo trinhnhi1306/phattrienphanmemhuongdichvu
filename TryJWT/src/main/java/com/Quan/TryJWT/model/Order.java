@@ -27,6 +27,9 @@ public class Order {
 	private long orderId;
 
 	private Date date;
+	
+	
+	private String address;
 
 	@Column(name = "total_price")
 	private float totalPrice;
