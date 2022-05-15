@@ -152,7 +152,9 @@ public class CategoryController {
 		
 		categoryService.deleteCategory(category);
 
+
 		return AppUtils.returnJS(HttpStatus.OK, "Remove category successfully!", null);
 	
 	}
+
 }

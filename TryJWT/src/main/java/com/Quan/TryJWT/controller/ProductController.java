@@ -77,7 +77,7 @@ public class ProductController {
 		if(product == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
 		}
-		return ResponseEntity.ok(product);
+		return ResponseEntity.badRequest().body("Product is unavaiable");
 	}
 
 	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)

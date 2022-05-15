@@ -39,10 +39,14 @@ public class Address {
 
 	@Column(name = "specific_address", length = 100)
 	private String specificAddress;
+	
 
-	@JsonIgnore
-	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "address_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private Set<User> setUsers = new HashSet<User>();
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
+	
+	
 
+	
 }
