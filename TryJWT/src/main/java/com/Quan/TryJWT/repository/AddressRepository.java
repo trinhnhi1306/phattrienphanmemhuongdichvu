@@ -16,5 +16,5 @@ public interface AddressRepository extends JpaRepository<Address, Long>{
 			+ "where province_id = :id", nativeQuery = true)
 	public Address findByAddressId(@Param("id") long id);
 	
-	List<Address> findBySetUsers_Id(Long id);
+//	List<Address> findBySetUsers_Id(Long id);
 }

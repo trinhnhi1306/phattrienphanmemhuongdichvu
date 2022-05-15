@@ -90,5 +90,9 @@ public class User {
 	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Feedback> feedback = new HashSet<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "user",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    private Set<Address> addresses = new HashSet<>();
 
 }
