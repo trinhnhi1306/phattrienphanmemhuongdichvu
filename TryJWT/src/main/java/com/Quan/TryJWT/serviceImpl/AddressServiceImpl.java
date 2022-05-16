@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import com.Quan.TryJWT.model.Address;
 import com.Quan.TryJWT.model.User;
@@ -45,12 +46,27 @@ public class AddressServiceImpl implements AddressService {
 
 	@Override
 	public Address findById(long id) {
-		return addressRepository.getById(id);
+		return addressRepository.findById(id).get();
 	}
 
 	@Override
 	public void deleteAddress(Address address) {
 		addressRepository.delete(address);
+	}
+
+	@Override
+	public void deleteById(Long id) {
+		try {
+			boolean isFound = addressRepository.existsById(id);
+			if(isFound) {
+				addressRepository.deleteById(id);
+			}
+	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
