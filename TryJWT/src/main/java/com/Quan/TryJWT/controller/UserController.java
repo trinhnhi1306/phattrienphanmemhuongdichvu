@@ -130,11 +130,13 @@ public class UserController {
 			}
 			String firstName = request.getFirstName();
 			String lastName = request.getLastName();
+			String image = request.getImage();
 			user.setUsername(username);
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
 			user.setEmail(email);
 			user.setPhone(phone);
+			user.setImage(image);
 
 			userService.updateProfile(user);
 			return ResponseEntity.ok("Update user successfully!");
