@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
@@ -77,7 +78,7 @@ public class ProductController {
 		if(product == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
 		}
-		return ResponseEntity.badRequest().body("Product is unavaiable");
+		return ResponseEntity.ok(product);
 	}
 
 	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
@@ -106,6 +107,25 @@ public class ProductController {
 		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
 		productService.addProduct(newProduct);
 		return AppUtils.returnJS(HttpStatus.OK, "Add product successfully!", newProduct);
+	}
+	
+	@PostMapping(value = "/test")
+	public ResponseEntity<?> postTestProduct(@Valid @RequestBody Product product, @RequestParam("file") MultipartFile file, BindingResult bindingResult) {
+		if (productService.existsByName(product.getName())) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product name is already taken!", null);
+		}
+		
+		if (bindingResult.hasErrors())
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+		
+//		
+//		Product newProduct = product;
+//		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
+//		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
+//		productService.addProduct(newProduct);
+		
+		System.out.println(file.getOriginalFilename());
+		return AppUtils.returnJS(HttpStatus.OK, "Add product successfully!", null);
 	}
 
 	@DeleteMapping(value = "/{id}")
