@@ -1,30 +1,48 @@
 package com.Quan.TryJWT.admin;
 
-import javax.validation.Valid;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
+import com.Quan.TryJWT.model.ERole;
+import com.Quan.TryJWT.model.Role;
 import com.Quan.TryJWT.model.User;
-import com.Quan.TryJWT.payload.request.UpdatePasswordRequest;
-import com.Quan.TryJWT.payload.response.MessageResponse;
+import com.Quan.TryJWT.repository.RoleRepository;
 import com.Quan.TryJWT.repository.UserRepository;
+import com.Quan.TryJWT.service.UserService;
+
+import io.swagger.annotations.ApiOperation;
 
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admin/user")
 public class ManageUserController {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	UserService userService;
+	
+	
+	
+	@Autowired
+	RoleRepository roleRepository;
 	
 	@Autowired
     PasswordEncoder encoder;
@@ -43,4 +61,67 @@ public class ManageUserController {
 //        userRepository.save(user);
 //        return ResponseEntity.ok().body("Update password successfully!");
 //    }
+	
+	
+	
+	@ApiOperation(value="Lấy tất cả danh sách sản phẩm")
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUser(){
+        return ResponseEntity.ok(userService.getAllUser());
+    }
+	
+	
+	@PutMapping("/add")
+	public ResponseEntity<?> addNew(@RequestBody User user){
+		
+			Optional<User> user2 = userRepository.findById(user.getId());
+		
+		//Nếu người dùng ko tồn tại (thêm mới)
+		if(!user2.isPresent()) {
+			Set<Role> roles = new HashSet<>();
+			Optional<Role> userRole = roleRepository.findByName(ERole.ROLE_USER);
+			roles.add(userRole.get());
+			if (userRepository.existsByUsername(user.getUsername())) {
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
+						"Username is already taken!", null);
+			}
+			if (userRepository.existsByEmail(user.getEmail())) {
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
+						"Email is already in use!", null);
+			}
+			if (userRepository.existsByPhone(user.getPhone())) {
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
+						"Phone is already in use!", null);
+			}
+			user.setRoles(roles);
+			user.setStatus(true);
+				String passwordConvert = BCrypt.hashpw("123456", BCrypt.gensalt(12));  
+				user.setPassword(passwordConvert);
+				
+				userService.saveUser(user);
+				return AppUtils.returnJS(HttpStatus.OK, "User registered successfully!", null);
+			
+		}else {//nếu người dùng đã tồn tại (thực hiện cập nhập)
+			
+			//kt trùng
+			boolean existPhone=userService.checkExistPhoneInfo(user.getPhone(),user.getUsername());
+			boolean existEmail=user.getEmail().isEmpty()?false:userService.checkExistEmailInfo(user.getEmail(),user.getUsername());
+			
+			//nếu trùng trả về lỗi
+			if (existPhone) {
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
+						"Phone is already in use!", null);
+			}
+			if (existEmail) {
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User registered failed! " +
+						"Email is already in use!", null);
+			}
+			
+				userService.saveUser(user);
+				return AppUtils.returnJS(HttpStatus.OK, "User registered successfully!", null);
+			
+			
+		}
+		
+	}
 }

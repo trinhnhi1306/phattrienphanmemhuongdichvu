@@ -20,4 +20,11 @@ public interface UserService {
 	Boolean existsByPhone(String phone);
 
 	void updateProfile(User user);
+	
+	public List<User> getAllUser(); 
+	public void addUser(User user);
+	public void saveUser(User user);
+	public boolean checkExistEmailInfo(String email, String username);
+	public boolean checkExistPhoneInfo(String phone, String username); 
+	
 }

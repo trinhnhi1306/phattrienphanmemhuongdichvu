@@ -29,7 +29,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
-		@UniqueConstraint(columnNames = "email") })
+		@UniqueConstraint(columnNames = "email"),@UniqueConstraint(columnNames = "phone") })
 
 @lombok.AllArgsConstructor
 @lombok.NoArgsConstructor

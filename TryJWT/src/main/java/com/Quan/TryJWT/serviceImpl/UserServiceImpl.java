@@ -89,4 +89,38 @@ public class UserServiceImpl implements UserService {
 		}
 		return users;
 	}
+
+	@Override
+	public List<User> getAllUser() {
+		return userRepository.findAll();
+	}
+
+	@Override
+	public void addUser(User user) {
+		userRepository.save(user);
+	}
+
+	@Override
+	public void saveUser(User user) {
+		userRepository.save(user);
+		
+	}
+
+	@Override
+	public boolean checkExistEmailInfo(String email, String username) {
+		
+		List<User> list = userRepository.verifyDuplicateEmail(email, username); 
+		
+		if(list.size()>0) return true; 
+		return false;
+	}
+
+	@Override //use for user update info
+	public boolean checkExistPhoneInfo(String phone, String username) {
+		List<User> list = userRepository.verifyDuplicatePhone(phone, username); 
+		
+		if(list.size()>0) return true; 
+		return false;
+		
+	}
 }
