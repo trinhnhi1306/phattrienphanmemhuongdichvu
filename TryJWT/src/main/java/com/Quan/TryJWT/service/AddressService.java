@@ -12,4 +12,6 @@ public interface AddressService {
 	public Address findById(long id);
 
 	public void deleteAddress(Address address);
+	
+	public void deleteById(Long id);
 }

@@ -16,6 +16,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -33,17 +36,19 @@ public class Address {
 	@Column(name = "address_id")
 	private Long addressId;
 
-	@ManyToOne
-	@JoinColumn(name = "ward_id")
-	private Ward ward;
+	
 
 	@Column(name = "specific_address", length = 100)
 	private String specificAddress;
 	
-
+	@ManyToOne
+	@JoinColumn(name = "ward_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Ward ward;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private User user;
 	
 	

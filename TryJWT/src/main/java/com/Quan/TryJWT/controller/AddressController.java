@@ -93,7 +93,19 @@ public class AddressController {
 		if (address == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address not found!", null);
 		}
-		addressService.deleteAddress(address);
-		return AppUtils.returnJS(HttpStatus.OK, "Delete address successfully!", address);
+		if(address.getUser() != null) {
+			User user = userService.findById(address.getUser().getId());
+			user.getAddresses().remove(address);
+			userRepository.save(user);
+		}
+		if(address.getWard()!= null) {
+			Ward ward = wardDao.findById(address.getWard().getWardId()).get();
+			ward.getAddresses().remove(address);
+			wardDao.save(ward);
+		}
+		
+		addressService.deleteById(id);
+		
+		return AppUtils.returnJS(HttpStatus.OK, "Delete address successfully!", null);
 	}
 }
