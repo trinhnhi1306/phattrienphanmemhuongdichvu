@@ -26,5 +26,6 @@ public interface UserService {
 	public void saveUser(User user);
 	public boolean checkExistEmailInfo(String email, String username);
 	public boolean checkExistPhoneInfo(String phone, String username); 
+	public int deleteUser(User user);
 	
 }

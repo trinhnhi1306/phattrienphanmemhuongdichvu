@@ -13,10 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.model.ERole;
+import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.Role;
 
 import com.Quan.TryJWT.model.User;
+import com.Quan.TryJWT.repository.OrderRepository;
 import com.Quan.TryJWT.repository.UserRepository;
+import com.Quan.TryJWT.service.OrderService;
 import com.Quan.TryJWT.service.UserService;
 
 @Service
@@ -24,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	OrderRepository orderRepository;
 
 	@Override
 	public User findById(long userId) {
@@ -122,5 +128,19 @@ public class UserServiceImpl implements UserService {
 		if(list.size()>0) return true; 
 		return false;
 		
+	}
+
+	@Override
+	public int deleteUser(User user) {
+		List<Order> listOrder= orderRepository.findByUser(user);
+		if(listOrder.size()>0) return 0;
+		else {
+			
+			for(Role role : user.getRoles() ) {
+				user.getRoles().remove(role);
+			}
+			userRepository.delete(user);
+			return 1;
+		}
 	}
 }
