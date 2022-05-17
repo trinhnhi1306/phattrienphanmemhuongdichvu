@@ -97,7 +97,7 @@ public class OrderController {
 		if (user == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
 		}
-//		order.setDate(new Date());
+		order.setDate(new Date());
 		order.setUser(user);
 		order = orderService.updateOrder(order, 1L);	
 		return AppUtils.returnJS(HttpStatus.OK, "Save order successfully!", order);
