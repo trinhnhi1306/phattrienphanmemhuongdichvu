@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
+import com.Quan.TryJWT.dto.MyItem;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.OrderService;
 import com.Quan.TryJWT.service.UserService;
+import com.Quan.TryJWT.service.ProductService;
+import com.Quan.TryJWT.service.ReportService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -34,6 +37,9 @@ public class OrderController {
 	
 	@Autowired
 	UserService userService;
+
+  @Autowired
+	ReportService reportService;
 	
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getOrderById(@PathVariable("id") long id) {
@@ -64,6 +70,11 @@ public class OrderController {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		}
 		return ResponseEntity.ok(list);
+	}
+	
+	@GetMapping(value = "/report")
+	public ResponseEntity<?> getReport() {
+		return ResponseEntity.ok(reportService.reportReceipt(new Date(), 7));
 	}
 	
 	@PutMapping(value = "/{id}")

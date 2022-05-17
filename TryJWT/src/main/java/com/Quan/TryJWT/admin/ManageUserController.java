@@ -5,25 +5,34 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.ERole;
 import com.Quan.TryJWT.model.Role;
 import com.Quan.TryJWT.model.User;
+import com.Quan.TryJWT.payload.request.UpdatePasswordRequest;
 import com.Quan.TryJWT.repository.RoleRepository;
 import com.Quan.TryJWT.repository.UserRepository;
 import com.Quan.TryJWT.service.UserService;
+
 
 import io.swagger.annotations.ApiOperation;
 
@@ -64,10 +73,10 @@ public class ManageUserController {
 	
 	
 	
-	@ApiOperation(value="Lấy tất cả danh sách sản phẩm")
+	@ApiOperation(value="Lấy tất cả danh sách user")
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUser(){
-        return ResponseEntity.ok(userService.getAllUser());
+        return ResponseEntity.ok(userService.getAllUserByStatus(true));
     }
 	
 	
@@ -123,5 +132,35 @@ public class ManageUserController {
 			
 		}
 		
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<?> updateUser(
+			@RequestParam(name="id") long id)  {
+		User user = userService.findById(id);
+		int status=userService.deleteUser(user);
+		if(status == 0) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "This user placed an order! ", null);
+		}
+		return AppUtils.returnJS(HttpStatus.OK, "Delete user successfully! " , null);
+	}
+	
+	@PutMapping("/change-password/{password}/{username}")
+	public ResponseEntity<?> updatePassword( @RequestParam String  password,@RequestParam String  username,
+			BindingResult bindingResult) {
+		User user = userRepository.findByUsername(username).get();
+		
+		
+		if (bindingResult.hasErrors()) {
+			return ResponseEntity.badRequest()
+					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+		}
+		if (password.trim().length() < 6) {
+			return ResponseEntity.badRequest().body("The length of the password must be least at 6 charaters");
+		}
+		String passwordConvert = BCrypt.hashpw(password, BCrypt.gensalt(12));  
+		user.setPassword(passwordConvert);
+		userRepository.save(user);
+		return ResponseEntity.ok().body("Update password successfully!");
 	}
 }
