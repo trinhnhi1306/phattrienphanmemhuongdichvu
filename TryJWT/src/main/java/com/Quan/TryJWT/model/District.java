@@ -43,6 +43,6 @@ public class District {
 	private Province province;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "district", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "district", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Set<Ward> wards = new HashSet<>();
 }

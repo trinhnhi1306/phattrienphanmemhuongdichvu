@@ -43,7 +43,7 @@ public class Ward {
 	private District district;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "ward",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "ward",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Set<Address> addresses = new HashSet<>();
 
 }
