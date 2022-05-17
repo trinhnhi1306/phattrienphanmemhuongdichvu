@@ -21,7 +21,7 @@ public interface UserService {
 
 	void updateProfile(User user);
 	
-	public List<User> getAllUser(); 
+	public List<User> getAllUserByStatus(boolean status); 
 	public void addUser(User user);
 	public void saveUser(User user);
 	public boolean checkExistEmailInfo(String email, String username);

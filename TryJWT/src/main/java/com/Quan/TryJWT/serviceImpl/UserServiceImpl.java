@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -96,9 +97,20 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
+	private boolean checkRoleAdmin(Set<Role> roles) {
+		
+		for (Role role : roles) {
+			if (role.getName() == ERole.ROLE_ADMIN ) {
+				return false;
+			}
+		}
+		return true;
+	}
+		
 	@Override
-	public List<User> getAllUser() {
-		return userRepository.findAll();
+	public List<User> getAllUserByStatus(boolean status) {
+		List<User> list = userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()) ).collect(Collectors.toList());
+		return userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()) ).collect(Collectors.toList());
 	}
 
 	@Override
@@ -136,10 +148,13 @@ public class UserServiceImpl implements UserService {
 		if(listOrder.size()>0) return 0;
 		else {
 			
-			for(Role role : user.getRoles() ) {
-				user.getRoles().remove(role);
-			}
-			userRepository.delete(user);
+//			for(Role role : user.getRoles() ) {
+//				user.getRoles().remove(role);
+//			}
+//			userRepository.delete(user);
+			
+			user.setStatus(false);
+			userRepository.save(user);
 			return 1;
 		}
 	}
