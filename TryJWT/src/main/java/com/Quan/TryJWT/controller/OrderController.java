@@ -1,5 +1,6 @@
 package com.Quan.TryJWT.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,9 +20,9 @@ import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
-import com.Quan.TryJWT.model.Product;
+import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.OrderService;
-import com.Quan.TryJWT.service.ProductService;
+import com.Quan.TryJWT.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -28,6 +31,9 @@ public class OrderController {
 
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	UserService userService;
 	
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getOrderById(@PathVariable("id") long id) {
@@ -61,7 +67,7 @@ public class OrderController {
 	}
 	
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<?> putOrder(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
+	public ResponseEntity<?> changeOrderStatus(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
 		Order order = null;
 
 		order = orderService.findById(id);
@@ -74,4 +80,15 @@ public class OrderController {
 		return AppUtils.returnJS(HttpStatus.OK, "Update order successfully!", null);
 	}
 	
+	@PostMapping(value = "/{id}")
+	public ResponseEntity<?> insertOrderByUserId(@PathVariable("id") long id, @RequestBody Order order) {
+		User user = userService.findById(id);
+		if (user == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
+		}
+//		order.setDate(new Date());
+		order.setUser(user);
+		order = orderService.updateOrder(order, 1L);	
+		return AppUtils.returnJS(HttpStatus.OK, "Save order successfully!", order);
+	}
 }

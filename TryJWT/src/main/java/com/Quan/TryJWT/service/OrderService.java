@@ -10,5 +10,5 @@ public interface OrderService {
 	public Order findById(long id);
 	public List<Order> findByStatusId(long statusId);
 	public List<OrderDetail> findOrderDetailByOrderId(long statusId);
-	public void updateOrder(Order order, long statusId);
+	public Order updateOrder(Order order, long statusId);
 }

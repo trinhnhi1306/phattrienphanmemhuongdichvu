@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
 import com.Quan.TryJWT.model.OrderStatus;
-import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.repository.OrderDetailRepository;
 import com.Quan.TryJWT.repository.OrderRepository;
 import com.Quan.TryJWT.repository.OrderStatusRepository;
@@ -50,10 +49,10 @@ public class OrderServiceImpl implements OrderService{
 	}
 
 	@Override
-	public void updateOrder(Order order, long statusId) {
+	public Order updateOrder(Order order, long statusId) {
 		OrderStatus status = orderStatusRepository.getById(statusId);
 		order.setStatusId(status);
-		orderRepository.save(order);
+		return orderRepository.save(order);
 	}
 	
 }

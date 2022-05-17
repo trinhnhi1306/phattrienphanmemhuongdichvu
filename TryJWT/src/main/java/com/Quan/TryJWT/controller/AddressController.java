@@ -70,10 +70,12 @@ public class AddressController {
     private ResponseEntity<List<Ward>> getAllVillageByDistrictId(@PathVariable("id") String districtId) {
         return ResponseEntity.ok(wardDao.findAllVillageByIdDistrict(districtId));
     }
+    
     @GetMapping("/address/{id}")
     private ResponseEntity<List<Address>> getAllAddressByUserId(@PathVariable("id") long userId) {
         return ResponseEntity.ok(addressService.findAllByUserId(userId));
     }
+    
     @PostMapping("/address/{userId}")
 	public ResponseEntity<?> addAddressToUser(@PathVariable("userId") long id, @Valid @RequestBody Address address, BindingResult bindingResult) {
     	User user = userService.findById(id);
@@ -87,6 +89,7 @@ public class AddressController {
 		address = addressService.addAddress(address);
 		return AppUtils.returnJS(HttpStatus.OK, "Save address successfully!", address);
 	}
+    
     @DeleteMapping("/address/{id}")
 	public ResponseEntity<?> deleteAddressById(@PathVariable("id") long id) {
     	Address address = addressService.findById(id);
