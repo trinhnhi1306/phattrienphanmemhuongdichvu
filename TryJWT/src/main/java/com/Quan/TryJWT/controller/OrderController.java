@@ -23,6 +23,7 @@ import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
 import com.Quan.TryJWT.model.OrderStatus;
 import com.Quan.TryJWT.model.User;
+import com.Quan.TryJWT.service.OrderDetailService;
 import com.Quan.TryJWT.service.OrderService;
 import com.Quan.TryJWT.service.OrderStatusService;
 import com.Quan.TryJWT.service.ReportService;
@@ -38,6 +39,8 @@ public class OrderController {
 	
 	@Autowired
 	OrderStatusService orderStatusService;
+  @Autowired
+	OrderDetailService orderDetailService;
 	
 	@Autowired
 	UserService userService;
@@ -90,6 +93,10 @@ public class OrderController {
 		if(order == null)
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		
+		if(statusId == 3)
+			if(orderDetailService.updateSoldQuantityByOrderDetail(order.getOrderDetails()) == false)
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order containing product have been sold out", null);
+				
 		orderService.updateOrder(order, statusId);
 		
 		return AppUtils.returnJS(HttpStatus.OK, "Update order successfully!", null);

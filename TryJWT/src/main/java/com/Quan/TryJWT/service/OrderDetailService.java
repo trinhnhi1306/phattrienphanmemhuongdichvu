@@ -7,4 +7,5 @@ import com.Quan.TryJWT.model.OrderDetail;
 public interface OrderDetailService {
 
 	public List<OrderDetail> saveListOrderDetail(List<OrderDetail> orderDetails);
+	public boolean updateSoldQuantityByOrderDetail(List<OrderDetail> orderDetails);
 }
