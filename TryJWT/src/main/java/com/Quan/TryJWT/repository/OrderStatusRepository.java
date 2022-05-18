@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.Quan.TryJWT.model.OrderStatus;
 
 @Repository
-public interface OrderStatusRepository extends JpaRepository<OrderStatus, Long>{
-
+public interface OrderStatusRepository extends JpaRepository<OrderStatus, Long> {
+	
 }
