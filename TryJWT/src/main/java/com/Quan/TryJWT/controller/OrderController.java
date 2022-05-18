@@ -18,14 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
-import com.Quan.TryJWT.dto.MyItem;
+import com.Quan.TryJWT.dto.OrderSummaryDTO;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
+import com.Quan.TryJWT.model.OrderStatus;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.OrderService;
-import com.Quan.TryJWT.service.UserService;
-import com.Quan.TryJWT.service.ProductService;
+import com.Quan.TryJWT.service.OrderStatusService;
 import com.Quan.TryJWT.service.ReportService;
+import com.Quan.TryJWT.service.UserService;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -34,6 +35,9 @@ public class OrderController {
 
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	OrderStatusService orderStatusService;
 	
 	@Autowired
 	UserService userService;
@@ -90,6 +94,36 @@ public class OrderController {
 		
 		return AppUtils.returnJS(HttpStatus.OK, "Update order successfully!", null);
 	}
+	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<?> getOrdersByUserAndStatus(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
+		User user = userService.findById(id);
+		if (user == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
+		}
+		OrderStatus orderStatus = orderStatusService.findById(statusId);
+		if (orderStatus == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Status id not invalid!", null);
+		}
+		List<Order> orders = orderService.findByUserAndStatusOrderByDateDesc(user, orderStatus);
+		System.err.println(statusId);
+		return ResponseEntity.ok(orders);
+	}
+	
+	@GetMapping(value = "/order-summary")
+	public ResponseEntity<?> getOrderDetailSummaryByOrderId(@RequestParam("orderId") long orderId) {
+		List<OrderDetail> list = null;
+		try {
+			list = orderService.findOrderDetailByOrderId(orderId);
+		} catch (NotFoundException e) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
+		}
+		OrderSummaryDTO dto = new OrderSummaryDTO();
+		dto.setOrderDetail(list.get(0));
+		dto.setSize(list.size());
+		return ResponseEntity.ok(dto);
+	}
+	
 	
 	@PostMapping(value = "/{id}")
 	public ResponseEntity<?> insertOrderByUserId(@PathVariable("id") long id, @RequestBody Order order) {
