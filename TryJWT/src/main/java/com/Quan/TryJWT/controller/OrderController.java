@@ -113,7 +113,6 @@ public class OrderController {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Status id not invalid!", null);
 		}
 		List<Order> orders = orderService.findByUserAndStatusOrderByDateDesc(user, orderStatus);
-		System.err.println(statusId);
 		return ResponseEntity.ok(orders);
 	}
 	
