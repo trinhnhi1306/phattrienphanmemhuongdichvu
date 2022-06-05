@@ -1,6 +1,8 @@
 package com.Quan.TryJWT.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.dto.OrderSummaryDTO;
+import com.Quan.TryJWT.model.Cart;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.OrderDetail;
 import com.Quan.TryJWT.model.OrderStatus;
+import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.model.User;
+import com.Quan.TryJWT.service.CartService;
 import com.Quan.TryJWT.service.OrderDetailService;
 import com.Quan.TryJWT.service.OrderService;
 import com.Quan.TryJWT.service.OrderStatusService;
+import com.Quan.TryJWT.service.ProductService;
 import com.Quan.TryJWT.service.ReportService;
 import com.Quan.TryJWT.service.UserService;
 
@@ -36,27 +42,32 @@ public class OrderController {
 
 	@Autowired
 	OrderService orderService;
-	
+
 	@Autowired
 	OrderStatusService orderStatusService;
-  @Autowired
+	@Autowired
 	OrderDetailService orderDetailService;
 	
 	@Autowired
+	CartService cartService;
+	@Autowired
+	ProductService productService;
+
+	@Autowired
 	UserService userService;
 
-  @Autowired
+	@Autowired
 	ReportService reportService;
-	
+
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getOrderById(@PathVariable("id") long id) {
 		Order order = null;
 		order = orderService.findById(id);
-		if(order == null)
+		if (order == null)
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
 		return ResponseEntity.ok(order);
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<?> getOrderByStatus(@RequestParam("statusId") long statusId) {
 		List<Order> order = null;
@@ -67,7 +78,7 @@ public class OrderController {
 		}
 		return ResponseEntity.ok(order);
 	}
-	
+
 	@GetMapping(value = "/order-detail")
 	public ResponseEntity<?> getOrderDetailById(@RequestParam("orderId") long orderId) {
 		List<OrderDetail> list = null;
@@ -78,32 +89,33 @@ public class OrderController {
 		}
 		return ResponseEntity.ok(list);
 	}
-	
+
 	@GetMapping(value = "/report")
 	public ResponseEntity<?> getReport() {
 		return ResponseEntity.ok(reportService.reportReceipt(new Date(), 7));
 	}
-	
+
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> changeOrderStatus(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
 		Order order = null;
 
 		order = orderService.findById(id);
-		
-		if(order == null)
+
+		if (order == null)
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order is unavaiable", null);
-		
-		if(statusId == 3)
-			if(orderDetailService.updateSoldQuantityByOrderDetail(order.getOrderDetails()) == false)
+
+		if (statusId == 3)
+			if (orderDetailService.updateSoldQuantityByOrderDetail(order.getOrderDetails()) == false)
 				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order containing product have been sold out", null);
-				
+
 		orderService.updateOrder(order, statusId);
-		
+
 		return AppUtils.returnJS(HttpStatus.OK, "Update order successfully!", null);
 	}
-	
+
 	@GetMapping("/user/{id}")
-	public ResponseEntity<?> getOrdersByUserAndStatus(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
+	public ResponseEntity<?> getOrdersByUserAndStatus(@PathVariable("id") long id,
+			@RequestParam("statusId") long statusId) {
 		User user = userService.findById(id);
 		if (user == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
@@ -113,10 +125,9 @@ public class OrderController {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Status id not invalid!", null);
 		}
 		List<Order> orders = orderService.findByUserAndStatusOrderByDateDesc(user, orderStatus);
-		System.err.println(statusId);
 		return ResponseEntity.ok(orders);
 	}
-	
+
 	@GetMapping(value = "/order-summary")
 	public ResponseEntity<?> getOrderDetailSummaryByOrderId(@RequestParam("orderId") long orderId) {
 		List<OrderDetail> list = null;
@@ -130,8 +141,7 @@ public class OrderController {
 		dto.setSize(list.size());
 		return ResponseEntity.ok(dto);
 	}
-	
-	
+
 	@PostMapping(value = "/{id}")
 	public ResponseEntity<?> insertOrderByUserId(@PathVariable("id") long id, @RequestBody Order order) {
 		User user = userService.findById(id);
@@ -140,7 +150,53 @@ public class OrderController {
 		}
 		order.setDate(new Date());
 		order.setUser(user);
-		order = orderService.updateOrder(order, 1L);	
+		order = orderService.updateOrder(order, 1L);
 		return AppUtils.returnJS(HttpStatus.OK, "Save order successfully!", order);
+	}
+	
+	@PostMapping(value = "/repurchase/{id}")
+	public ResponseEntity<?> repurchaseByOrderId(@PathVariable("id") long id) {
+		Order order = orderService.findById(id);
+		if (order == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Order not found!", null);
+		}
+		User user = userService.findById(order.getUser().getId());
+		if (user == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
+		}
+		List<Cart> addCartList = new ArrayList<Cart>();
+		List<OrderDetail> orderDetailList = order.getOrderDetails();
+		for (OrderDetail orderDetail : orderDetailList) {
+			Product product = productService.findById(orderDetail.getProduct().getProductId());
+			if (product == null) {
+				// return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product not found!", null);
+				continue;
+			}
+			int quantity = orderDetail.getQuantity();
+			Cart cart = cartService.findByUserIdAndProductId(user.getId(), product.getProductId());
+			if (cart == null) {
+				if (quantity > 0 ) {
+					cart = new Cart(null, product, user, quantity);
+				}
+				else {
+					// return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Quantity of cart item must be greater than 0!", null);
+					continue;
+				}
+			}
+			else {
+				int afterQuantity = cart.getQuantity() + quantity;
+				afterQuantity = (afterQuantity <= 0) ? 0 : afterQuantity;
+				if (afterQuantity > cart.getProduct().getQuantity()) {
+					// return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "The remaining quantity of this product is not enough!", null);
+					afterQuantity = cart.getProduct().getQuantity();
+				}
+				cart.setQuantity(afterQuantity);
+			}
+			cart = cartService.saveCart(cart);
+			addCartList.add(cart);
+			// return AppUtils.returnJS(HttpStatus.OK, "Add cart successfully!", cart);
+		}
+		
+		return AppUtils.returnJS(HttpStatus.OK, "Add list cart successfully!", addCartList);
 	}
 }
