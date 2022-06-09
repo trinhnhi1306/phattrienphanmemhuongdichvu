@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +28,7 @@ import com.Quan.TryJWT.model.CartSupport;
 import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.payload.request.CartRequest;
+import com.Quan.TryJWT.payload.response.ResponseBody;
 import com.Quan.TryJWT.service.CartService;
 import com.Quan.TryJWT.service.ProductService;
 import com.Quan.TryJWT.service.UserService;
@@ -204,6 +207,32 @@ public class CartController {
 		return AppUtils.returnJS(HttpStatus.OK, "Edit cart successfully!", cart);
 	}
 	
+
+	// NOT WORKING!!! -> worked
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
+		Cart cart = cartService.findById(id);
+		User user = userService.findById(cart.getUser().getId());
+		user.getCarts().remove(cart);
+		
+		Product product = productService.findById(cart.getProduct().getProductId());
+		product.getCarts().remove(cart);
+		
+		userService.saveUser(user);
+		productService.addProduct(product);
+		
+		if (cart == null) {
+			return ResponseEntity
+					.status(HttpStatus.BAD_REQUEST)
+	                .body(new ResponseBody(400, "Cart item not found!", null));
+		}
+		cartService.deleteCart(id);		
+		return ResponseEntity
+				.status(HttpStatus.OK)
+                .body(new ResponseBody(200, "Delete cart item successfully!", cart));
+	}
+
+
 	// NOT WORKING!!!
 //	@DeleteMapping("/{id}")
 //	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
@@ -218,4 +247,5 @@ public class CartController {
 //				.status(HttpStatus.OK)
 //                .body(new ResponseBody(200, "Delete cart item successfully!", cart));
 //	}
+
 }
