@@ -45,4 +45,6 @@ public class OrderDetailController {
 		orderDetailService.saveListOrderDetail(orderDetails);
 		return AppUtils.returnJS(HttpStatus.OK, "Save order details successfully!", null);
 	}
+	
+	
 }

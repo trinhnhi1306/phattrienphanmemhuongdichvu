@@ -35,4 +35,14 @@ public class OrderDetail {
 	private int quantity;
 
 	private float price;
+	
+	public OrderDetail ( Product product, Order order,int quantity, float price)
+	{
+		this.product = product;
+		this.order = order;
+		this.quantity = quantity;
+		this.price = price;
+	}
+	
+	
 }

@@ -230,10 +230,19 @@ public class CartController {
 		return new ResponseBody(200, "Edit cart successfully!", cart);
 	}
 	
-	// NOT WORKING!!!
+	// NOT WORKING!!! -> worked
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
 		Cart cart = cartService.findById(id);
+		User user = userService.findById(cart.getUser().getId());
+		user.getCarts().remove(cart);
+		
+		Product product = productService.findById(cart.getProduct().getProductId());
+		product.getCarts().remove(cart);
+		
+		userService.saveUser(user);
+		productService.addProduct(product);
+		
 		if (cart == null) {
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)

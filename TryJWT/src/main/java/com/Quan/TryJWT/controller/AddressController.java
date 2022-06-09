@@ -68,11 +68,14 @@ public class AddressController {
 
     @GetMapping("/ward/{id}")
     private ResponseEntity<List<Ward>> getAllVillageByDistrictId(@PathVariable("id") String districtId) {
+    	System.out.println(districtId);
+    	List<Ward> listt = wardDao.findAllVillageByIdDistrict(districtId);
         return ResponseEntity.ok(wardDao.findAllVillageByIdDistrict(districtId));
     }
     
     @GetMapping("/address/{id}")
     private ResponseEntity<List<Address>> getAllAddressByUserId(@PathVariable("id") long userId) {
+    	
         return ResponseEntity.ok(addressService.findAllByUserId(userId));
     }
     
