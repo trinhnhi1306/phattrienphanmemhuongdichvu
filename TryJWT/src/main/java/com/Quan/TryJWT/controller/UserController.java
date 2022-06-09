@@ -56,7 +56,8 @@ public class UserController {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
 					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Image not found!");
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 
