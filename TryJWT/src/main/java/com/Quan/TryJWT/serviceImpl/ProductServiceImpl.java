@@ -83,7 +83,7 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	public void deleteProduct(Product product) {		
-		product.setStatus(false);
+
 		productRepository.delete(product);		
 	}
 
@@ -102,5 +102,19 @@ public class ProductServiceImpl implements ProductService{
 	public Product getProductById(long id) {
 		// TODO Auto-generated method stub
 		return productRepository.getById(id);
+	}
+
+	@Override
+	public void deleteById(long id) {
+		try {
+			boolean isFound = productRepository.existsById(id);
+			if(isFound) {
+				productRepository.deleteById(id);
+			}
+	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
