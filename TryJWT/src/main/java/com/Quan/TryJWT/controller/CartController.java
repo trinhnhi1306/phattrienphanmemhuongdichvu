@@ -212,6 +212,10 @@ public class CartController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
 		Cart cart = cartService.findById(id);
+		if (cart == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Cart item not found!", null);
+		}
+		
 		User user = userService.findById(cart.getUser().getId());
 		user.getCarts().remove(cart);
 		
@@ -219,17 +223,10 @@ public class CartController {
 		product.getCarts().remove(cart);
 		
 		userService.saveUser(user);
-		productService.addProduct(product);
+		productService.addProduct(product);		
 		
-		if (cart == null) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-	                .body(new ResponseBody(400, "Cart item not found!", null));
-		}
 		cartService.deleteCart(id);		
-		return ResponseEntity
-				.status(HttpStatus.OK)
-                .body(new ResponseBody(200, "Delete cart item successfully!", cart));
+		return AppUtils.returnJS(HttpStatus.OK, "Delete cart item successfully!", null);
 	}
 
 
