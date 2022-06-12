@@ -60,4 +60,10 @@ public class OrderServiceImpl implements OrderService {
 	public List<Order> findByUserAndStatusOrderByDateDesc(User user, OrderStatus orderStatus) {
 		return orderRepository.findByUserAndStatusIdOrderByDateDesc(user, orderStatus);
 	}
+
+	@Override
+	public List<Order> getAllByUser(User user) {
+		// TODO Auto-generated method stub
+		return orderRepository.findByUser(user);
+	}
 }

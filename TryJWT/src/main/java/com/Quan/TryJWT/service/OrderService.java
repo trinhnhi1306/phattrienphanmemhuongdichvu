@@ -14,4 +14,5 @@ public interface OrderService {
 	public List<OrderDetail> findOrderDetailByOrderId(long statusId);
 	public Order updateOrder(Order order, long statusId);
 	public List<Order> findByUserAndStatusOrderByDateDesc(User user, OrderStatus orderStatus);
+	public List<Order> getAllByUser(User user);
 }
