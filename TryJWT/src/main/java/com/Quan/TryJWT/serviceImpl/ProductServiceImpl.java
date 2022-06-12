@@ -105,6 +105,15 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	public void deleteById(long id) {
-		productRepository.deleteById(id);
+		try {
+			boolean isFound = productRepository.existsById(id);
+			if(isFound) {
+				productRepository.deleteById(id);
+			}
+	
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
