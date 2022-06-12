@@ -3,15 +3,11 @@ package com.Quan.TryJWT.serviceImpl;
 import java.util.List;
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.Quan.TryJWT.model.Cart;
-
 import com.Quan.TryJWT.model.Product;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.repository.CartRepository;
@@ -34,6 +30,7 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public List<Cart> findByUserId(long userId) {
+		
 		return cartRepository.findByUserId(userId);
 	}
 	
@@ -52,6 +49,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public void deleteCart(long id) {
+		
 		cartRepository.deleteById(id);
 	}
 

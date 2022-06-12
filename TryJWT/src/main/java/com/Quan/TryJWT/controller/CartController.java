@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.Exception.NotFoundException;
 import com.Quan.TryJWT.model.Cart;
 import com.Quan.TryJWT.model.CartSupport;
@@ -32,19 +33,14 @@ import com.Quan.TryJWT.service.CartService;
 import com.Quan.TryJWT.service.ProductService;
 import com.Quan.TryJWT.service.UserService;
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/cart")
 public class CartController {
 
-	
-
 	@Autowired
 	ProductService productService;
 	
-
-
 	@Autowired
 	CartService cartService;
 	
@@ -81,10 +77,8 @@ public class CartController {
 			cartService.addNewItem(user, product, quantityofProduct);
 
 		}
-
-		return ResponseEntity
-				.status(HttpStatus.OK)
-                .body(new ResponseBody(200, "Add cart successfully!", null));
+		
+		return AppUtils.returnJS(HttpStatus.OK, "Add cart successfully!", null);
 	}
 
 	@PostMapping("/update-cart")
@@ -102,9 +96,8 @@ public class CartController {
 		int quantityofProduct = quantity.orElse(1);
 		int maximumQuantity = product.getQuantity();
 		if (quantityofProduct > maximumQuantity) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-	                .body(new ResponseBody(400, "The requested quantity exceeds the remaining quantity of this product!", null));
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, 
+					"The requested quantity exceeds the remaining quantity of this product!", null);
 		}
 		CartSupport cartSupport = new CartSupport(cartService.getCartByUser(user));
 		cartSupport.updateItem(product, quantityofProduct);
@@ -113,10 +106,8 @@ public class CartController {
 
 			cartService.updateItemsCartChangeQuatity(user, product, quantityofProduct);
 		}
-
-		return ResponseEntity
-				.status(HttpStatus.OK)
-                .body(new ResponseBody(200, "update cart successfully!", null));
+		
+		return AppUtils.returnJS(HttpStatus.OK, "Update cart successfully!", null);
 	}
 
 	@PostMapping("/remove-item")
@@ -140,14 +131,9 @@ public class CartController {
 			
 			cartService.deleteItems(user, product);
 		}
-		return ResponseEntity
-				.status(HttpStatus.OK)
-                .body(new ResponseBody(200, "remove cart successfully!", null));
+		return AppUtils.returnJS(HttpStatus.OK, "Remove cart successfully!", null);
 	}
 
-	
-
-	
 	@GetMapping("")
 	public ResponseEntity<List<Cart>> getCartByUserId(@RequestParam("userId") int userId) 
 	{
@@ -159,15 +145,11 @@ public class CartController {
 	public ResponseEntity<?> postCart(@RequestBody CartRequest cartRequest) {
 		Product product = productService.findById(cartRequest.getProductId());
 		if (product == null) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-	                .body(new ResponseBody(400, "Product not found!", null));
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product not found!", null);
 		}
 		User user = userService.findById(cartRequest.getUserId());
 		if (user == null) {
-			return ResponseEntity
-					.status(HttpStatus.BAD_REQUEST)
-	                .body(new ResponseBody(400, "User not found!", null));
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
 		}
 		int quantity = cartRequest.getQuantity();
 		Cart cart = cartService.findByUserIdAndProductId(cartRequest.getUserId(), cartRequest.getProductId());
@@ -176,36 +158,30 @@ public class CartController {
 				cart = new Cart(null, product, user, quantity);
 			}
 			else {
-				return ResponseEntity
-						.status(HttpStatus.BAD_REQUEST)
-		                .body(new ResponseBody(400, "Quantity of cart item must be greater than 0!", null));
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Quantity of cart item must be greater than 0!", null);
 			}
 		}
 		else {
 			int afterQuantity = cart.getQuantity() + quantity;
 			afterQuantity = (afterQuantity <= 0) ? 0 : afterQuantity;
 			if (afterQuantity > cart.getProduct().getQuantity()) {
-				return ResponseEntity
-						.status(HttpStatus.BAD_REQUEST)
-		                .body(new ResponseBody(400, "The remaining quantity of this product is not enough!", null));
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "The remaining quantity of this product is not enough!", null);
 			}
 			cart.setQuantity(afterQuantity);
 		}
 		cart = cartService.saveCart(cart);
-		return ResponseEntity
-				.status(HttpStatus.OK)
-                .body(new ResponseBody(200, "Add cart successfully!", cart));
+		return AppUtils.returnJS(HttpStatus.OK, "Add cart successfully!", cart);
 	}
 	
 	@PutMapping
-	public ResponseBody putCart(@RequestBody CartRequest cartRequest) {
+	public ResponseEntity<?> putCart(@RequestBody CartRequest cartRequest) {
 		Product product = productService.findById(cartRequest.getProductId());
 		if (product == null) {
-			return new ResponseBody(400, "Product not found!", null);
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product not found!", null);
 		}
 		User user = userService.findById(cartRequest.getUserId());
 		if (user == null) {
-			return new ResponseBody(400, "User not found!", null);
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
 		}
 		int quantity = cartRequest.getQuantity();
 		Cart cart = cartService.findByUserIdAndProductId(cartRequest.getUserId(), cartRequest.getProductId());
@@ -214,7 +190,7 @@ public class CartController {
 				cart = new Cart(null, product, user, quantity);
 			}
 			else {
-				return new ResponseBody(400, "Quantity of cart item must be greater than 0!", null);
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Quantity of cart item must be greater than 0!", null);
 			}
 		}
 		else {
@@ -222,18 +198,29 @@ public class CartController {
 			if (quantity > productQuantity) {
 				cart.setQuantity(productQuantity);
 				cart = cartService.saveCart(cart);
-				return new ResponseBody(201, "There are only " + productQuantity + " quantity remaining for this item!", cart);
+				return AppUtils.returnJS(HttpStatus.BAD_REQUEST, 
+						"There are only " + productQuantity + " quantity remaining for this item!", cart);
 			}			
 		}
 		cart.setQuantity(quantity);
 		cart = cartService.saveCart(cart);
-		return new ResponseBody(200, "Edit cart successfully!", cart);
+		return AppUtils.returnJS(HttpStatus.OK, "Edit cart successfully!", cart);
 	}
 	
-	// NOT WORKING!!!
+
+	// NOT WORKING!!! -> worked
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
 		Cart cart = cartService.findById(id);
+		User user = userService.findById(cart.getUser().getId());
+		user.getCarts().remove(cart);
+		
+		Product product = productService.findById(cart.getProduct().getProductId());
+		product.getCarts().remove(cart);
+		
+		userService.saveUser(user);
+		productService.addProduct(product);
+		
 		if (cart == null) {
 			return ResponseEntity
 					.status(HttpStatus.BAD_REQUEST)
@@ -244,5 +231,21 @@ public class CartController {
 				.status(HttpStatus.OK)
                 .body(new ResponseBody(200, "Delete cart item successfully!", cart));
 	}
+
+
+	// NOT WORKING!!!
+//	@DeleteMapping("/{id}")
+//	public ResponseEntity<?> deleteCart(@PathVariable("id") long id) {
+//		Cart cart = cartService.findById(id);
+//		if (cart == null) {
+//			return ResponseEntity
+//					.status(HttpStatus.BAD_REQUEST)
+//	                .body(new ResponseBody(400, "Cart item not found!", null));
+//		}
+//		cartService.deleteCart(id);		
+//		return ResponseEntity
+//				.status(HttpStatus.OK)
+//                .body(new ResponseBody(200, "Delete cart item successfully!", cart));
+//	}
 
 }
