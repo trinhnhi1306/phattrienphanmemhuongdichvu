@@ -71,11 +71,16 @@ public class ManageUserController {
 	@ApiOperation(value="Lấy tất cả danh sách user")
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUser(){
+
+//		List<User> list = userService.getAllUserByStatus(true);
+//        return ResponseEntity.ok(userService.getAllUserByStatus(true));
+
 		List<User> userList = userService.getAllUserByStatus(true);
 		if (userList == null) {
 			userList = new ArrayList<User>();
 		}
         return ResponseEntity.ok(userList);
+
     }
 	
 	
