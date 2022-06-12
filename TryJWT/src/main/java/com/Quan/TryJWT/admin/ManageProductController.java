@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.Quan.TryJWT.Exception.AppUtils;
+import com.Quan.TryJWT.model.Brand;
+import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.Product;
+import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
@@ -75,17 +78,38 @@ public class ManageProductController {
 
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
-		Product product = null;
-		
-		product = productService.findById(id);
-		
+		Product product = productService.findById(id);
 		if(product == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
 		}
 		
-		if (product.getOrderDetails().size() > 0)
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is in use", null);
-			
+		int size;
+		size = product.getCarts().size();
+		if (size > 0)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, 
+					String.format("Cannot delete this product! This product relate to %s carts", size), null);
+		
+		size = product.getOrderDetails().size();
+		if (size > 0)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, 
+					String.format("Cannot delete this product! This product relate to %s order details", size), null);
+		
+		size = product.getFeedBacks().size();
+		if (size > 0)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, 
+					String.format("Cannot delete this product! This product relate to %s feedbacks", size), null);
+		
+		if(product.getCategory() != null) {
+			Category category = categoryService.findById(product.getCategory().getCategoryId());
+			category.getProducts().remove(product);
+			categoryService.updateCategory(category);
+		}
+		if(product.getBrand() != null) {
+			Brand brand = brandService.findById(product.getCategory().getCategoryId());
+			brand.getProducts().remove(product);
+			brandService.updateBrand(brand);
+		}
+		
 		productService.deleteProduct(product);
 		return AppUtils.returnJS(HttpStatus.OK, "Delete product successfully!", null);
 	}

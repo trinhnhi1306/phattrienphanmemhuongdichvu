@@ -86,5 +86,9 @@ public class Product {
 	@JsonIgnore
 	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<OrderDetail> orderDetails = new HashSet<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private Set<Feedback> feedBacks = new HashSet<>();
 
 }

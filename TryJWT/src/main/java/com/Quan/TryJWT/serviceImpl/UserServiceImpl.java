@@ -18,11 +18,9 @@ import com.Quan.TryJWT.model.Address;
 import com.Quan.TryJWT.model.ERole;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.Role;
-
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.repository.OrderRepository;
 import com.Quan.TryJWT.repository.UserRepository;
-import com.Quan.TryJWT.service.OrderService;
 import com.Quan.TryJWT.service.UserService;
 
 @Service
