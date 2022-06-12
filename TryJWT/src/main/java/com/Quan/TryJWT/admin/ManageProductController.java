@@ -105,7 +105,7 @@ public class ManageProductController {
 			categoryService.updateCategory(category);
 		}
 		if(product.getBrand() != null) {
-			Brand brand = brandService.findById(product.getCategory().getCategoryId());
+			Brand brand = brandService.findById(product.getBrand().getBrandId());
 			brand.getProducts().remove(product);
 			brandService.updateBrand(brand);
 		}
