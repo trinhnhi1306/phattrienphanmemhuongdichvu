@@ -84,7 +84,7 @@ public class ProductServiceImpl implements ProductService{
 	@Override
 	public void deleteProduct(Product product) {		
 		product.setStatus(false);
-		productRepository.save(product);		
+		productRepository.delete(product);		
 	}
 
 	@Override
