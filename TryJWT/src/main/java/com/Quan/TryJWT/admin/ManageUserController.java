@@ -76,6 +76,7 @@ public class ManageUserController {
 	@ApiOperation(value="Lấy tất cả danh sách user")
     @GetMapping("/all")
     public ResponseEntity<List<User>> getAllUser(){
+		List<User> list = userService.getAllUserByStatus(true);
         return ResponseEntity.ok(userService.getAllUserByStatus(true));
     }
 	
