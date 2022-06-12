@@ -8,6 +8,8 @@ public interface AddressService {
 	public List<Address> findAllByUserId(long userId);
 
 	public Address addAddress(Address address);
+	
+	public Address updateAddress(Address address);
 
 	public Address findById(long id);
 

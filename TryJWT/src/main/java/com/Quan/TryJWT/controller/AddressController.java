@@ -94,16 +94,18 @@ public class AddressController {
 		return AppUtils.returnJS(HttpStatus.OK, "Save address successfully!", address);
 	}
     
-    @PutMapping("/address/{userId}")
-   	public ResponseEntity<?> updateAddressToUser(@PathVariable("userId") long id, @Valid @RequestBody Address address) {
-       	User user = userService.findById(id);
-       	if (user == null) {
-       		return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
-   		}
-   		
-   		address.setUser(user);
-   		address = addressService.addAddress(address);
-   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", address);
+    @PutMapping("/address/{id}")
+   	public ResponseEntity<?> updateAddressToUser(@PathVariable("id") long id, @Valid @RequestBody Address address) {
+    	Address oldAddress = addressService.findById(id);
+		if (oldAddress == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address not found!", null);
+		}
+		
+		oldAddress.setSpecificAddress(address.getSpecificAddress());
+		oldAddress.setWard(address.getWard());
+		
+   		addressService.updateAddress(oldAddress);
+   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", oldAddress);
    	}
     
     @DeleteMapping("/address/{id}")
