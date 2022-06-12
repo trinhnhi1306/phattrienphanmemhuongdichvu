@@ -83,6 +83,7 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	public void deleteProduct(Product product) {		
+
 		productRepository.delete(product);		
 	}
 
