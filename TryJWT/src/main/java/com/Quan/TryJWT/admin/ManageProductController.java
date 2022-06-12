@@ -110,7 +110,7 @@ public class ManageProductController {
 			brandService.updateBrand(brand);
 		}
 		
-		productService.deleteProduct(product);
+		productService.deleteById(id);
 		return AppUtils.returnJS(HttpStatus.OK, "Delete product successfully!", null);
 	}
 
