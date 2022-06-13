@@ -1,6 +1,7 @@
 package com.Quan.TryJWT.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.Quan.TryJWT.dto.PosterDTO;
+import com.Quan.TryJWT.model.Poster;
 import com.Quan.TryJWT.serviceImpl.PosterServiceImpl;
 
 @RestController
@@ -25,8 +26,11 @@ public class PosterController {
 	private PosterServiceImpl posterService;
 	
 	@GetMapping("")
-	public ResponseEntity<List<PosterDTO>> getPosters() {
-		List<PosterDTO> list = posterService.getListPosters();
+	public ResponseEntity<List<Poster>> getListPoster() {
+		List<Poster> list = posterService.getListPoster();
+		if (list == null) {
+			list = new ArrayList<Poster>();
+		}
 		return ResponseEntity.ok(list);
 	}
 	

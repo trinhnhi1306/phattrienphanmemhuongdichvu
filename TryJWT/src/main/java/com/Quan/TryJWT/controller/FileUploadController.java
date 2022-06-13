@@ -37,6 +37,15 @@ public class FileUploadController {
 		System.err.println(fileName);
 		return fileName;
 	}
+	
+	@PostMapping("/poster")
+	public ResponseEntity<?> postPosterImage(@RequestParam("file") MultipartFile file) {
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		
+		String newFileName = saveFile(fileName, file, "posters");
+		
+		return ResponseEntity.ok(newFileName);
+	}
 
 	@PostMapping("/product")
 	public ResponseEntity<?> postProductImage(@RequestParam("file") MultipartFile file) {
@@ -52,7 +61,7 @@ public class FileUploadController {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		
 		String newFileName = saveFile(fileName, file, "categories");
-		System.err.println(newFileName);
+		
 		return ResponseEntity.ok(newFileName);
 	}
 	
