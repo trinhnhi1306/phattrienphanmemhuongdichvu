@@ -34,4 +34,20 @@ public class PosterServiceImpl implements PosterService {
 	public List<Poster> getListPoster() {
 		return posterRepository.findAll();
 	}
+
+	@Override
+	public Poster savePoster(Poster poster) {
+		return posterRepository.save(poster);
+	}
+
+	@Override
+	public void deletePoster(long id) {
+		Poster poster = posterRepository.getById(id);
+		posterRepository.delete(poster);
+	}
+
+	@Override
+	public Poster getPosterById(long id) {
+		return posterRepository.getById(id);
+	}
 }
