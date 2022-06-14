@@ -2,14 +2,7 @@ package com.Quan.TryJWT.dto;
 
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
+import com.Quan.TryJWT.model.Address;
 import com.Quan.TryJWT.model.User;
 
 import lombok.AllArgsConstructor;
@@ -22,22 +15,34 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-	
+
 	private Long id;
-	
+
 	private String username;
-	
+
 	private String email;
-	
-	private String password;
-	
+
 	private String firstName;
-	
+
 	private String lastName;
-	
+
 	private String phone;
 
 	private String image;
-	
 
+	private int numord;
+	
+	private List<Address> addresses;
+
+	public UserDTO(User u, int numord, List<Address> addresses) {
+		this.id = u.getId();
+		this.username = u.getUsername();
+		this.email = u.getEmail();
+		this.firstName = u.getFirstName();
+		this.lastName = u.getLastName();
+		this.phone = u.getPhone();
+		this.image = u.getImage();
+		this.numord = numord;
+		this.addresses = addresses;
+	}
 }

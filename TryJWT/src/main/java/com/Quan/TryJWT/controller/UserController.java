@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,22 +26,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.NotFoundException;
-
+import com.Quan.TryJWT.dto.UserDTO;
+import com.Quan.TryJWT.dto.UserDetailOutput;
 import com.Quan.TryJWT.dto.UserOutput;
 import com.Quan.TryJWT.model.User;
 
 import com.Quan.TryJWT.payload.request.UpdatePasswordRequest;
 import com.Quan.TryJWT.payload.request.UpdateProfileRequest;
 import com.Quan.TryJWT.repository.UserRepository;
-
+import com.Quan.TryJWT.service.AddressService;
 import com.Quan.TryJWT.service.UserService;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
 	@Autowired
 	UserService userService;
+
+	@Autowired
+	AddressService addressService;
 
 	@Autowired
 	UserRepository userRepository;
@@ -97,6 +101,57 @@ public class UserController {
 		return ResponseEntity.ok(output);
 	}
 
+	@GetMapping(value = { "/numorders" })
+	public ResponseEntity<UserDetailOutput> getUserDetail(
+			@RequestParam(value = "status", required = false) Optional<Boolean> uStatus,
+			@RequestParam(value = "pageNo", required = false) Optional<Integer> uPageNo,
+			@RequestParam(value = "pageSize", required = false) Optional<Integer> uPageSize,
+			@RequestParam(value = "sortField", required = false) Optional<String> uSortField,
+			@RequestParam(value = "sortDirection", required = false) Optional<String> uSortDir) {
+		boolean status = true;
+		int pageNo = 1;
+		int pageSize = 10;
+		String sortField = "id";
+		String sortDirection = "ASC";
+		if (uStatus.isPresent()) {
+			status = uStatus.get();
+		}
+		if (uPageNo.isPresent()) {
+			pageNo = uPageNo.get();
+		}
+		if (uPageSize.isPresent()) {
+			pageSize = uPageSize.get();
+		}
+		if (uSortField.isPresent()) {
+			sortField = uSortField.get();
+		}
+		if (uSortDir.isPresent()) {
+			sortDirection = uSortDir.get();
+		}
+
+		int totalPage;
+		List<User> users = new ArrayList<User>();
+
+		totalPage = (int) Math.ceil((double) (userService.getCountByStatus(status)) / pageSize);
+		users = userService.getAllByStatus(status, pageNo, pageSize, sortField, sortDirection);
+
+		UserDTO user;
+		Long userIDTemp;
+		List<UserDTO> listResult = new ArrayList<UserDTO>();
+		for (User u : users) {
+			userIDTemp = u.getId();
+			user = new UserDTO(u, userService.getNumberOrderById(userIDTemp),
+					addressService.findAllByUserId(userIDTemp));
+			listResult.add(user);
+		}
+
+		UserDetailOutput output = new UserDetailOutput();
+		output.setPage(pageNo);
+		output.setTotalPage(totalPage);
+		output.setListResult(listResult);
+		return ResponseEntity.ok(output);
+	}
+
 	@GetMapping(value = { "/{id}" })
 	public ResponseEntity<?> getUserById(@PathVariable("id") long id) {
 		User user = null;
@@ -106,6 +161,17 @@ public class UserController {
 			return ResponseEntity.badRequest().body("User is unavaiable");
 		}
 		return ResponseEntity.ok(user);
+	}
+
+	@GetMapping(value = { "numorder/{id}" })
+	public ResponseEntity<?> getNumberOrderById(@PathVariable("id") long id) {
+		int numOrd = 0;
+		try {
+			numOrd = userService.getNumberOrderById(id);
+		} catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body("Error");
+		}
+		return ResponseEntity.ok(numOrd);
 	}
 
 	@PutMapping(value = "edit-profile")
@@ -169,5 +235,20 @@ public class UserController {
 		user.setPassword(encoder.encode(request.getNewPassword().trim()));
 		userRepository.save(user);
 		return ResponseEntity.ok().body("Update password successfully!");
+	}
+
+	@PutMapping(value = "setStatus")
+	public ResponseEntity<?> setStatus(@Valid @RequestBody UserDTO user, BindingResult bindingResult) {
+		try {
+			if (bindingResult.hasErrors()) {
+				return ResponseEntity.badRequest()
+						.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
+			}
+
+			userService.deleteUser1(user.getId());
+			return ResponseEntity.ok("Set status user successfully!");
+		} catch (NotFoundException e) {
+			return ResponseEntity.badRequest().body("User not found!");
+		}
 	}
 }

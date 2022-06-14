@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,11 +69,14 @@ public class AddressController {
 
     @GetMapping("/ward/{id}")
     private ResponseEntity<List<Ward>> getAllVillageByDistrictId(@PathVariable("id") String districtId) {
+    	System.out.println(districtId);
+    	List<Ward> listt = wardDao.findAllVillageByIdDistrict(districtId);
         return ResponseEntity.ok(wardDao.findAllVillageByIdDistrict(districtId));
     }
     
     @GetMapping("/address/{id}")
     private ResponseEntity<List<Address>> getAllAddressByUserId(@PathVariable("id") long userId) {
+    	
         return ResponseEntity.ok(addressService.findAllByUserId(userId));
     }
     
@@ -89,6 +93,20 @@ public class AddressController {
 		address = addressService.addAddress(address);
 		return AppUtils.returnJS(HttpStatus.OK, "Save address successfully!", address);
 	}
+    
+    @PutMapping("/address/{id}")
+   	public ResponseEntity<?> updateAddressToUser(@PathVariable("id") long id, @Valid @RequestBody Address address) {
+    	Address oldAddress = addressService.findById(id);
+		if (oldAddress == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address not found!", null);
+		}
+		
+		oldAddress.setSpecificAddress(address.getSpecificAddress());
+		oldAddress.setWard(address.getWard());
+		
+   		addressService.updateAddress(oldAddress);
+   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", oldAddress);
+   	}
     
     @DeleteMapping("/address/{id}")
 	public ResponseEntity<?> deleteAddressById(@PathVariable("id") long id) {

@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.Quan.TryJWT.Exception.NotFoundException;
+import com.Quan.TryJWT.dto.UserDTO;
+import com.Quan.TryJWT.model.Address;
 import com.Quan.TryJWT.model.ERole;
 import com.Quan.TryJWT.model.Order;
 import com.Quan.TryJWT.model.Role;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserRepository userRepository;
-	
+
 	@Autowired
 	OrderRepository orderRepository;
 
@@ -34,7 +36,7 @@ public class UserServiceImpl implements UserService {
 	public User findById(long userId) {
 		Optional<User> user = userRepository.findById(userId);
 		if (!user.isPresent()) {
-			throw new NotFoundException("User not found by id");
+			return null;
 		}
 		return user.get();
 	}
@@ -96,19 +98,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private boolean checkRoleAdmin(Set<Role> roles) {
-		
+
 		for (Role role : roles) {
-			if (role.getName() == ERole.ROLE_ADMIN ) {
+			if (role.getName() == ERole.ROLE_ADMIN) {
 				return false;
 			}
 		}
 		return true;
 	}
-		
+
 	@Override
 	public List<User> getAllUserByStatus(boolean status) {
-		List<User> list = userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()) ).collect(Collectors.toList());
-		return userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()) ).collect(Collectors.toList());
+		List<User> list = userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()))
+				.collect(Collectors.toList());
+		return userRepository.findAllByStatus(status).stream().filter(u -> checkRoleAdmin(u.getRoles()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -119,41 +123,70 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void saveUser(User user) {
 		userRepository.save(user);
-		
+
 	}
 
 	@Override
 	public boolean checkExistEmailInfo(String email, String username) {
-		
-		List<User> list = userRepository.verifyDuplicateEmail(email, username); 
-		
-		if(list.size()>0) return true; 
+
+		List<User> list = userRepository.verifyDuplicateEmail(email, username);
+
+		if (list.size() > 0)
+			return true;
 		return false;
 	}
 
-	@Override //use for user update info
+	@Override // use for user update info
 	public boolean checkExistPhoneInfo(String phone, String username) {
-		List<User> list = userRepository.verifyDuplicatePhone(phone, username); 
-		
-		if(list.size()>0) return true; 
+		List<User> list = userRepository.verifyDuplicatePhone(phone, username);
+
+		if (list.size() > 0)
+			return true;
 		return false;
-		
+
 	}
 
 	@Override
 	public int deleteUser(User user) {
-		List<Order> listOrder= orderRepository.findByUser(user);
-		if(listOrder.size()>0) return 0;
+		List<Order> listOrder = orderRepository.findByUser(user);
+		if (listOrder.size() > 0)
+			return 0;
 		else {
-			
+
 //			for(Role role : user.getRoles() ) {
 //				user.getRoles().remove(role);
 //			}
 //			userRepository.delete(user);
-			
+
 			user.setStatus(false);
 			userRepository.save(user);
 			return 1;
 		}
+	}
+
+	@Override
+	public int deleteUser1(Long userID) {
+		Optional<User> userOld = userRepository.findById(userID);
+		User user = userOld.get();
+		user.setStatus(false);
+		userRepository.save(user);
+		return 1;
+	}
+
+	@Override
+	public int getNumberOrderById(long idUser) {
+		// TODO Auto-generated method stub
+		int numOrd = 0;
+		try {
+			numOrd = userRepository.getNumberOrderById(idUser);
+		} catch (Exception ex) {
+		}
+		return numOrd;
+	}
+
+	@Override
+	public int getCountByStatus(Boolean status) {
+		// TODO Auto-generated method stub
+		return (int) userRepository.countByStatus(status);
 	}
 }
