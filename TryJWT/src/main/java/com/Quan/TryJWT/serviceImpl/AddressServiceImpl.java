@@ -69,4 +69,10 @@ public class AddressServiceImpl implements AddressService {
 		
 	}
 
+	@Override
+	public void updateAddress(Address address) {
+		// TODO Auto-generated method stub
+		addressRepository.save(address);
+	}
+
 }

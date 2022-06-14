@@ -14,4 +14,6 @@ public interface AddressService {
 	public void deleteAddress(Address address);
 	
 	public void deleteById(Long id);
+	
+	public void updateAddress(Address address);
 }

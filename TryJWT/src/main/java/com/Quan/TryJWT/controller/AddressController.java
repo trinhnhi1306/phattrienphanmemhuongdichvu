@@ -14,12 +14,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Address;
+import com.Quan.TryJWT.model.Brand;
 import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.District;
 import com.Quan.TryJWT.model.Province;
@@ -93,6 +95,22 @@ public class AddressController {
 		return AppUtils.returnJS(HttpStatus.OK, "Save address successfully!", address);
 	}
     
+    @PutMapping(value = "/address")
+	public ResponseEntity<?> updateAddress(@Valid @RequestBody Address newAddress, BindingResult bindingResult) {
+		Address oldAddress = null;
+		oldAddress = addressService.findById(newAddress.getAddressId());
+		
+		if(oldAddress == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address is unavaiable", null);
+		
+		if (bindingResult.hasErrors())
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+
+		newAddress.setUser(oldAddress.getUser());
+		addressService.updateAddress(newAddress);
+		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", newAddress);
+    }
+			
     @DeleteMapping("/address/{id}")
 	public ResponseEntity<?> deleteAddressById(@PathVariable("id") long id) {
     	Address address = addressService.findById(id);
