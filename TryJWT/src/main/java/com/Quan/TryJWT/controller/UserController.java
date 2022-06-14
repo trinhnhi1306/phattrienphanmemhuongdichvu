@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,7 +36,7 @@ import com.Quan.TryJWT.payload.request.UpdateProfileRequest;
 import com.Quan.TryJWT.repository.UserRepository;
 import com.Quan.TryJWT.service.AddressService;
 import com.Quan.TryJWT.service.UserService;
-
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -60,7 +60,8 @@ public class UserController {
 			return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
 					.body(new InputStreamResource(imgFile.getInputStream()));
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Image not found!");
+			System.out.println(e.getMessage());
+			return ResponseEntity.badRequest().body(e.getMessage());
 		}
 	}
 

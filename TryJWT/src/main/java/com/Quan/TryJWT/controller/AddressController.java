@@ -21,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Address;
-import com.Quan.TryJWT.model.Brand;
-import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.District;
 import com.Quan.TryJWT.model.Province;
 import com.Quan.TryJWT.model.User;
@@ -107,10 +105,24 @@ public class AddressController {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
 
 		newAddress.setUser(oldAddress.getUser());
-		addressService.updateAddress(newAddress);
+		addressService.updateAddress1(newAddress);
 		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", newAddress);
     }
 			
+    @PutMapping("/address/{id}")
+   	public ResponseEntity<?> updateAddressToUser(@PathVariable("id") long id, @Valid @RequestBody Address address) {
+    	Address oldAddress = addressService.findById(id);
+		if (oldAddress == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address not found!", null);
+		}
+		
+		oldAddress.setSpecificAddress(address.getSpecificAddress());
+		oldAddress.setWard(address.getWard());
+		
+   		addressService.updateAddress(oldAddress);
+   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", oldAddress);
+   	}
+    
     @DeleteMapping("/address/{id}")
 	public ResponseEntity<?> deleteAddressById(@PathVariable("id") long id) {
     	Address address = addressService.findById(id);

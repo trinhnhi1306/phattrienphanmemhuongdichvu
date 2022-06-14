@@ -9,11 +9,13 @@ public interface AddressService {
 
 	public Address addAddress(Address address);
 
+	public Address updateAddress(Address address);
+
 	public Address findById(long id);
 
 	public void deleteAddress(Address address);
-	
+
 	public void deleteById(Long id);
-	
-	public void updateAddress(Address address);
+
+	public void updateAddress1(Address address);
 }

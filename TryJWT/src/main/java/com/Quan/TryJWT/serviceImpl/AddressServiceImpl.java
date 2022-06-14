@@ -1,11 +1,10 @@
 package com.Quan.TryJWT.serviceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
-
 import com.Quan.TryJWT.model.Address;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.repository.AddressRepository;
@@ -46,7 +45,11 @@ public class AddressServiceImpl implements AddressService {
 
 	@Override
 	public Address findById(long id) {
-		return addressRepository.findById(id).get();
+		Optional<Address> address = addressRepository.findById(id);
+		if (!address.isPresent()) {
+			return null;
+		}
+		return address.get();
 	}
 
 	@Override
@@ -58,21 +61,25 @@ public class AddressServiceImpl implements AddressService {
 	public void deleteById(Long id) {
 		try {
 			boolean isFound = addressRepository.existsById(id);
-			if(isFound) {
+			if (isFound) {
 				addressRepository.deleteById(id);
 			}
-	
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	@Override
-	public void updateAddress(Address address) {
+	public void updateAddress1(Address address) {
 		// TODO Auto-generated method stub
 		addressRepository.save(address);
+	}
+
+	@Override
+	public Address updateAddress(Address address) {
+		return addressRepository.save(address);
 	}
 
 }
