@@ -64,6 +64,6 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> getAllByUser(User user) {
 		// TODO Auto-generated method stub
-		return orderRepository.findByUser(user);
+		return orderRepository.findByUserByDateDesc(user);
 	}
 }

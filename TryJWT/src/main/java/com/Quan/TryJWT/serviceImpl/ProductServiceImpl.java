@@ -117,4 +117,10 @@ public class ProductServiceImpl implements ProductService{
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public List<Product> getAllByCategory(long categoryId) {
+		Category category = categoryRepository.getById(categoryId);
+		return productRepository.findAllByCategory(category);
+	}
 }

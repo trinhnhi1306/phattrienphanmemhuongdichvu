@@ -144,6 +144,7 @@ public class CartController {
 	@PostMapping
 	public ResponseEntity<?> postCart(@RequestBody CartRequest cartRequest) {
 		Product product = productService.findById(cartRequest.getProductId());
+		
 		if (product == null) {
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product not found!", null);
 		}
@@ -153,6 +154,7 @@ public class CartController {
 		}
 		int quantity = cartRequest.getQuantity();
 		Cart cart = cartService.findByUserIdAndProductId(cartRequest.getUserId(), cartRequest.getProductId());
+		
 		if (cart == null) {
 			if (quantity > 0 ) {
 				cart = new Cart(null, product, user, quantity);

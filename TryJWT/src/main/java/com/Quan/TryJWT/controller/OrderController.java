@@ -162,6 +162,8 @@ public class OrderController {
 	public ResponseEntity<?> getOrdersByUserAndStatus2(@PathVariable("id") long id, @RequestParam("statusId") long statusId) {
 		User user = userService.findById(id);
 		if(statusId == 0) {
+			
+			OrderStatus orderStatus = orderStatusService.findById(statusId);
 			List<Order> orders = orderService.getAllByUser(user);
 			List<OrderDTO> orders2 = new ArrayList<OrderDTO>();
 			for(Order o : orders) {
