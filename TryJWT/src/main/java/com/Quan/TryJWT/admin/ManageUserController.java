@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,21 +51,6 @@ public class ManageUserController {
 	@Autowired
 	PasswordEncoder encoder;
 
-//	@PutMapping("/update-new-password")
-//    @PreAuthorize("hasRole('MODERATOR')")
-//    public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest request){
-//        if(request.getPassword().trim().length()<6) return ResponseEntity.badRequest().body("The length of the password must be least at 6 charaters");
-//        if (!userRepository.existsByUsername(request.getUsername())) {
-//            return ResponseEntity
-//                    .badRequest()
-//                    .body(new MessageResponse("Error: Username is not exist!"));
-//        }
-//        User user = userRepository.findByUsername(request.getUsername()).get();
-//        user.setPassword(encoder.encode(request.getPassword().trim()));
-//        userRepository.save(user);
-//        return ResponseEntity.ok().body("Update password successfully!");
-//    }
-
 	@ApiOperation(value = "Lấy tất cả danh sách user")
 	@GetMapping("/all")
 	public ResponseEntity<List<User>> getAllUser() {
@@ -74,7 +62,10 @@ public class ManageUserController {
 	}
 
 	@PutMapping("/add")
-	public ResponseEntity<?> addNew(@RequestBody User user) {
+	public ResponseEntity<?> addNew(@Valid @RequestBody User user, BindingResult bindingResult) {
+		
+		if (bindingResult.hasErrors())
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
 
 		Optional<User> user2 = userRepository.findById(user.getId());
 
@@ -126,14 +117,27 @@ public class ManageUserController {
 
 	}
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<?> updateUser(@RequestParam(name = "id") long id) {
+//	@DeleteMapping("/delete")
+//	public ResponseEntity<?> updateUser(@RequestParam(name = "id") long id) {
+//		User user = userService.findById(id);
+//		int status = userService.deleteUser(user);
+//		if (status == 0) {
+//			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "This user placed an order! ", null);
+//		}
+//		return AppUtils.returnJS(HttpStatus.OK, "Delete user successfully! ", null);
+//	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable(name = "id") long id) {
 		User user = userService.findById(id);
+		if (user == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
+		}
 		int status = userService.deleteUser(user);
 		if (status == 0) {
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "This user placed an order! ", null);
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "This user placed an order!", null);
 		}
-		return AppUtils.returnJS(HttpStatus.OK, "Delete user successfully! ", null);
+		return AppUtils.returnJS(HttpStatus.OK, "Delete user successfully!", null);
 	}
 
 	@PutMapping("/change-password/{password}/{username}")
@@ -153,4 +157,19 @@ public class ManageUserController {
 		userRepository.save(user);
 		return ResponseEntity.ok().body("Update password successfully!");
 	}
+	
+//	@PutMapping("/update-new-password")
+//  @PreAuthorize("hasRole('MODERATOR')")
+//  public ResponseEntity<?> updatePassword(@Valid @RequestBody UpdatePasswordRequest request){
+//      if(request.getPassword().trim().length()<6) return ResponseEntity.badRequest().body("The length of the password must be least at 6 charaters");
+//      if (!userRepository.existsByUsername(request.getUsername())) {
+//          return ResponseEntity
+//                  .badRequest()
+//                  .body(new MessageResponse("Error: Username is not exist!"));
+//      }
+//      User user = userRepository.findByUsername(request.getUsername()).get();
+//      user.setPassword(encoder.encode(request.getPassword().trim()));
+//      userRepository.save(user);
+//      return ResponseEntity.ok().body("Update password successfully!");
+//  }
 }
