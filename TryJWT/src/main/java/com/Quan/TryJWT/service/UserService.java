@@ -2,7 +2,6 @@ package com.Quan.TryJWT.service;
 
 import java.util.List;
 
-import com.Quan.TryJWT.dto.UserDTO;
 import com.Quan.TryJWT.model.User;
 
 public interface UserService {

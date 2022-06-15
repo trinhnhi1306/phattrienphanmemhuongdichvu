@@ -21,7 +21,6 @@ import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Brand;
 import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.Product;
-import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
@@ -77,7 +76,7 @@ public class ManageProductController {
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
 		Product product = productService.findById(id);
 		if(product == null) {
-			return AppUtils.returnJS(HttpStatus.NOT_FOUND, "Product is unavaiable", product);
+			return AppUtils.returnJS(HttpStatus.NOT_FOUND, "Product is unavaiable", null);
 		}
 		
 		int size;

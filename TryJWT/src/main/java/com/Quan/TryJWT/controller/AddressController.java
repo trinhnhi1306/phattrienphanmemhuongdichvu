@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Address;
-import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.District;
 import com.Quan.TryJWT.model.Province;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.model.Ward;
-import com.Quan.TryJWT.repository.AddressRepository;
 import com.Quan.TryJWT.repository.DistrictRepository;
 import com.Quan.TryJWT.repository.ProvinceRepository;
 import com.Quan.TryJWT.repository.UserRepository;
@@ -44,8 +42,6 @@ public class AddressController {
     private DistrictRepository districtDao;
     @Autowired
     private WardRepository wardDao;
-    @Autowired
-    private AddressRepository addressDao;
 
     @Autowired
     private UserRepository userRepository;
@@ -69,8 +65,6 @@ public class AddressController {
 
     @GetMapping("/ward/{id}")
     private ResponseEntity<List<Ward>> getAllVillageByDistrictId(@PathVariable("id") String districtId) {
-    	System.out.println(districtId);
-    	List<Ward> listt = wardDao.findAllVillageByIdDistrict(districtId);
         return ResponseEntity.ok(wardDao.findAllVillageByIdDistrict(districtId));
     }
     
