@@ -140,6 +140,10 @@ public class ManageUserController {
 		return AppUtils.returnJS(HttpStatus.OK, "Delete user successfully!", null);
 	}
 
+
+		
+
+
 	@PutMapping("/change-password/{password}/{username}")
 	public ResponseEntity<?> updatePassword(@RequestParam String password, @RequestParam String username,
 			BindingResult bindingResult) {
@@ -149,6 +153,7 @@ public class ManageUserController {
 			return ResponseEntity.badRequest()
 					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
 		}
+
 		if (password.trim().length() < 6) {
 			return ResponseEntity.badRequest().body("The length of the password must be least at 6 charaters");
 		}

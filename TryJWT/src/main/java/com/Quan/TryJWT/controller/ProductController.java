@@ -71,6 +71,18 @@ public class ProductController {
 		}
 		return ResponseEntity.ok(product);
 	}
+	
+	@GetMapping(value = { "/relate/{id}" })
+	public ResponseEntity<?> getRelatedProducts(@PathVariable("id") long id) {
+		Product product = null;
+		
+		product = productService.findById(id);
+		List<Product> products = productService.getAllByCategory(product.getCategory().getCategoryId());
+		if(product == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", null);
+		}
+		return ResponseEntity.ok(products);
+	}
 
 	@RequestMapping(value = "image/{imageName}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
 	public ResponseEntity<?> getImage(@PathVariable("imageName") String imageName) throws IOException {

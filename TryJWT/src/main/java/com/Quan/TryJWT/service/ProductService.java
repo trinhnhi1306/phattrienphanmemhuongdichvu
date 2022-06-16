@@ -10,6 +10,7 @@ import com.Quan.TryJWT.model.Product;
 public interface ProductService {
 	public Page<Product> getAll(int pageNo, int pageSize, String sortField, String sortDirection);
 	public List<Product> getAllByCategoryId(long categoryId, int pageNo, int pageSize, String sortField, String sortDirection);
+	public List<Product> getAllByCategory(long categoryId);
 	public List<Product> getAllByStatus(boolean status, int pageNo, int pageSize, String sortField, String sortDirection);
 	public int getCount();
 	public int getCountByCategoryId(long categoryId);
