@@ -23,5 +23,5 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	public long countByStatusId(OrderStatus statusId);
 	
 	public List<Order> findByUserAndStatusIdOrderByDateDesc(User user, OrderStatus orderStatus);
-	public List<Order> findByUserByDateDesc(User user);
+	public List<Order> findByUserOrderByDateDesc(User user);
 }
