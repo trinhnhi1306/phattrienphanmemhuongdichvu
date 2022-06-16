@@ -163,6 +163,18 @@ public class UserController {
 		return ResponseEntity.ok(user);
 	}
 
+//	@GetMapping(value = { "getDetail/{id}" })
+//	public ResponseEntity<?> getDetailUserById(@PathVariable("id") long id) {
+//		UserDTO userDTO = null;
+//		try {
+//			User user = userService.findById(id);
+//			userDTO = new UserDTO(user, userService.getNumberOrderById(id), addressService.findAllByUserId(id));
+//		} catch (NotFoundException e) {
+//			return ResponseEntity.badRequest().body("User is unavaiable");
+//		}
+//		return ResponseEntity.ok(userDTO);
+//	}
+
 	@GetMapping(value = { "numorder/{id}" })
 	public ResponseEntity<?> getNumberOrderById(@PathVariable("id") long id) {
 		int numOrd = 0;

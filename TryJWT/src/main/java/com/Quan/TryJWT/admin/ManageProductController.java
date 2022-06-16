@@ -21,7 +21,6 @@ import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Brand;
 import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.Product;
-import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.service.BrandService;
 import com.Quan.TryJWT.service.CategoryService;
 import com.Quan.TryJWT.service.ProductService;
@@ -49,12 +48,9 @@ public class ManageProductController {
 		
 		if (bindingResult.hasErrors())
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
-		
-		Product newProduct = product;
-		newProduct.setBrand(brandService.findById(product.getBrand().getBrandId()));
-		newProduct.setCategory(categoryService.findById(product.getCategory().getCategoryId()));
-		productService.addProduct(newProduct);
-		return AppUtils.returnJS(HttpStatus.OK, "Add product successfully!", newProduct);
+
+		productService.addProduct(product);
+		return AppUtils.returnJS(HttpStatus.OK, "Add product successfully!", product);
 	}
 	
 	@PostMapping(value = "/test")
@@ -80,7 +76,7 @@ public class ManageProductController {
 	public ResponseEntity<?> deleteProduct(@PathVariable("id") long id) {
 		Product product = productService.findById(id);
 		if(product == null) {
-			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Product is unavaiable", product);
+			return AppUtils.returnJS(HttpStatus.NOT_FOUND, "Product is unavaiable", null);
 		}
 		
 		int size;
@@ -105,7 +101,7 @@ public class ManageProductController {
 			categoryService.updateCategory(category);
 		}
 		if(product.getBrand() != null) {
-			Brand brand = brandService.findById(product.getCategory().getCategoryId());
+			Brand brand = brandService.findById(product.getBrand().getBrandId());
 			brand.getProducts().remove(product);
 			brandService.updateBrand(brand);
 		}
@@ -131,9 +127,6 @@ public class ManageProductController {
 		}
 		if (bindingResult.hasErrors())
 			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
-		
-		newProduct.setBrand(brandService.findById(newProduct.getBrand().getBrandId()));
-		newProduct.setCategory(categoryService.findById(newProduct.getCategory().getCategoryId()));
 
 		productService.updateProduct(newProduct);
 		return AppUtils.returnJS(HttpStatus.OK, "Update product successfully!", newProduct);

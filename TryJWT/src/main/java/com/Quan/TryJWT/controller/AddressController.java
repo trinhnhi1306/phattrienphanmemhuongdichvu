@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.Quan.TryJWT.Exception.AppUtils;
 import com.Quan.TryJWT.model.Address;
-import com.Quan.TryJWT.model.Category;
 import com.Quan.TryJWT.model.District;
 import com.Quan.TryJWT.model.Province;
 import com.Quan.TryJWT.model.User;
 import com.Quan.TryJWT.model.Ward;
-import com.Quan.TryJWT.repository.AddressRepository;
 import com.Quan.TryJWT.repository.DistrictRepository;
 import com.Quan.TryJWT.repository.ProvinceRepository;
 import com.Quan.TryJWT.repository.UserRepository;
@@ -44,8 +42,6 @@ public class AddressController {
     private DistrictRepository districtDao;
     @Autowired
     private WardRepository wardDao;
-    @Autowired
-    private AddressRepository addressDao;
 
     @Autowired
     private UserRepository userRepository;
@@ -69,8 +65,6 @@ public class AddressController {
 
     @GetMapping("/ward/{id}")
     private ResponseEntity<List<Ward>> getAllVillageByDistrictId(@PathVariable("id") String districtId) {
-    	System.out.println(districtId);
-    	List<Ward> listt = wardDao.findAllVillageByIdDistrict(districtId);
         return ResponseEntity.ok(wardDao.findAllVillageByIdDistrict(districtId));
     }
     
@@ -94,16 +88,34 @@ public class AddressController {
 		return AppUtils.returnJS(HttpStatus.OK, "Save address successfully!", address);
 	}
     
-    @PutMapping("/address/{userId}")
-   	public ResponseEntity<?> updateAddressToUser(@PathVariable("userId") long id, @Valid @RequestBody Address address) {
-       	User user = userService.findById(id);
-       	if (user == null) {
-       		return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "User not found!", null);
-   		}
-   		
-   		address.setUser(user);
-   		address = addressService.addAddress(address);
-   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", address);
+    @PutMapping(value = "/address")
+	public ResponseEntity<?> updateAddress(@Valid @RequestBody Address newAddress, BindingResult bindingResult) {
+		Address oldAddress = null;
+		oldAddress = addressService.findById(newAddress.getAddressId());
+		
+		if(oldAddress == null)
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address is unavaiable", null);
+		
+		if (bindingResult.hasErrors())
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, bindingResult.getAllErrors().get(0).getDefaultMessage(), null);
+
+		newAddress.setUser(oldAddress.getUser());
+		addressService.updateAddress1(newAddress);
+		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", newAddress);
+    }
+			
+    @PutMapping("/address/{id}")
+   	public ResponseEntity<?> updateAddressToUser(@PathVariable("id") long id, @Valid @RequestBody Address address) {
+    	Address oldAddress = addressService.findById(id);
+		if (oldAddress == null) {
+			return AppUtils.returnJS(HttpStatus.BAD_REQUEST, "Address not found!", null);
+		}
+		
+		oldAddress.setSpecificAddress(address.getSpecificAddress());
+		oldAddress.setWard(address.getWard());
+		
+   		addressService.updateAddress(oldAddress);
+   		return AppUtils.returnJS(HttpStatus.OK, "Update address successfully!", oldAddress);
    	}
     
     @DeleteMapping("/address/{id}")

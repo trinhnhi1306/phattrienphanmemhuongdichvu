@@ -57,7 +57,7 @@ public class ManageCategoryController {
 		
 		newCategory.setCategoryId(id);
 		Category category = categoryService.updateCategory(newCategory);
-		return AppUtils.returnJS(HttpStatus.OK, "Add category successfully!", category);
+		return AppUtils.returnJS(HttpStatus.OK, "Update category successfully!", category);
 	}
   
 	@DeleteMapping(value = "/{id}")
