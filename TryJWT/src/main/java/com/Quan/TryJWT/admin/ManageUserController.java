@@ -144,15 +144,10 @@ public class ManageUserController {
 		
 
 
-	@PutMapping("/change-password/{password}/{username}")
-	public ResponseEntity<?> updatePassword(@RequestParam String password, @RequestParam String username,
-			BindingResult bindingResult) {
+	@PutMapping("/change-password")
+	public ResponseEntity<?> updatePassword(@RequestParam String password, @RequestParam String username) {
 		User user = userRepository.findByUsername(username).get();
 
-		if (bindingResult.hasErrors()) {
-			return ResponseEntity.badRequest()
-					.body("Error: " + bindingResult.getAllErrors().get(0).getDefaultMessage());
-		}
 
 		if (password.trim().length() < 6) {
 			return ResponseEntity.badRequest().body("The length of the password must be least at 6 charaters");
